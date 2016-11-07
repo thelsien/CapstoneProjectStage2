@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#CDDC39</color>
+    <color name="colorPrimaryDark">#9E9D24</color>
+    <color name="colorAccent">#536DFE</color>
+
+    <color name="spendings_color">#F44336</color>
+    <color name="income_color">#0D47A1</color>
+</resources>
