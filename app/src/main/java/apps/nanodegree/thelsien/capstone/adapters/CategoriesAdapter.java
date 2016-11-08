@@ -1,4 +1,4 @@
-package apps.nanodegree.thelsien.capstone;
+package apps.nanodegree.thelsien.capstone.adapters;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import apps.nanodegree.thelsien.capstone.R;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 
 /**
@@ -16,9 +17,11 @@ import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoriesAdapterViewHolder> {
 
     private Cursor mCursor;
+    private OnCategoryClickListener mListener;
 
-    public CategoriesAdapter(Cursor cursor) {
+    public CategoriesAdapter(Cursor cursor, OnCategoryClickListener listener) {
         mCursor = cursor;
+        mListener = listener;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         notifyDataSetChanged();
     }
 
-    public class CategoriesAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class CategoriesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView mIconView;
         public TextView mNameView;
         public TextView mValueView;
@@ -62,6 +65,18 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
             mIconView = (ImageView) itemView.findViewById(R.id.iv_icon);
             mNameView = (TextView) itemView.findViewById(R.id.tv_name);
             mValueView = (TextView) itemView.findViewById(R.id.tv_value);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            mListener.onCategoryClicked(mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD__ID)));
+        }
+    }
+
+    public interface OnCategoryClickListener {
+        void onCategoryClicked(int categoryId);
     }
 }

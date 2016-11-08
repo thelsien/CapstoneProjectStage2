@@ -1,5 +1,6 @@
 package apps.nanodegree.thelsien.capstone;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,13 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import apps.nanodegree.thelsien.capstone.adapters.CategoriesAdapter;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 
 /**
  * Created by frodo on 2016. 11. 07..
  */
 
-public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CategoriesAdapter.OnCategoryClickListener {
 
     private static final String[] CATEGORY_COLUMNS = {
             MainCategoriesTable.FIELD__ID,
@@ -42,7 +44,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mCategoryAdapter = new CategoriesAdapter(null);
+        mCategoryAdapter = new CategoriesAdapter(null, this);
         mRecyclerView.setAdapter(mCategoryAdapter);
 
         return rootView;
@@ -74,5 +76,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mCategoryAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onCategoryClicked(int categoryId) {
+        Intent intent = new Intent(getContext(), CategoryDetailsActivity.class);
+        intent.putExtra(CategoryDetailsActivity.INTENT_EXTRA_CATEGORY_ID, categoryId);
+
+        startActivity(intent);
     }
 }
