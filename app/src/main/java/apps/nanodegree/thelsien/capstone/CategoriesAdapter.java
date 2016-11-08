@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
+
 /**
  * Created by frodo on 2016. 11. 07..
  */
@@ -30,9 +32,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     public void onBindViewHolder(CategoriesAdapter.CategoriesAdapterViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        holder.mIconView.setImageResource(R.drawable.ic_kitchen_black_48dp);
-        holder.mNameView.setText("Food");
-        holder.mValueView.setText("90%");
+        holder.mIconView.setImageResource(mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
+        holder.mNameView.setText(mCursor.getString(mCursor.getColumnIndex(MainCategoriesTable.FIELD_NAME)));
+        holder.mValueView.setText("0%");
     }
 
     @Override
@@ -42,6 +44,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         }
 
         return 0;
+    }
+
+    public void swapCursor(Cursor data) {
+        mCursor = data;
+        notifyDataSetChanged();
     }
 
     public class CategoriesAdapterViewHolder extends RecyclerView.ViewHolder {
