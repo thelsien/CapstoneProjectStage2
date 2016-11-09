@@ -7,7 +7,7 @@ import ckm.simple.sql_provider.annotation.SimpleSQLTable;
  * Created by frodo on 2016. 11. 08..
  */
 
-@SimpleSQLTable(table = "SpendingsTable", provider = "CategoriesProvider")
+@SimpleSQLTable(table = "Spendings", provider = "CategoriesProvider")
 public class SpendingsTableConfig {
 
     @SimpleSQLColumn(value = "id", primary = true, autoincrement = true)
@@ -21,4 +21,7 @@ public class SpendingsTableConfig {
 
     @SimpleSQLColumn(value = "note")
     public String note;
+
+    @SimpleSQLColumn(value = "date")
+    public long date;
 }
