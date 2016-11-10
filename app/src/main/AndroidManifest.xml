@@ -24,6 +24,14 @@
                 android:value="apps.nanodegree.thelsien.capstone.MainActivity"/>
         </activity>
 
+        <activity
+            android:name=".AddEditEntryActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="apps.nanodegree.thelsien.capstone.MainActivity"/>
+        </activity>
+
         <provider
             android:name="apps.nanodegree.thelsien.capstone.data.CategoriesProvider"
             android:authorities="apps.nanodegree.thelsien.capstone.authority"

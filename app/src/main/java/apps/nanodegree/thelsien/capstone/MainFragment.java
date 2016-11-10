@@ -44,7 +44,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mCategoryAdapter = new CategoriesAdapter(null, this);
+        mCategoryAdapter = new CategoriesAdapter(null, this, false);
         mRecyclerView.setAdapter(mCategoryAdapter);
 
         return rootView;

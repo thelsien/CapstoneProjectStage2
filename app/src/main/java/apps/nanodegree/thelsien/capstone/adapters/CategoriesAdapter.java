@@ -18,15 +18,21 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 
     private Cursor mCursor;
     private OnCategoryClickListener mListener;
+    private boolean mIsCategoriesInGrid;
 
-    public CategoriesAdapter(Cursor cursor, OnCategoryClickListener listener) {
+    public CategoriesAdapter(Cursor cursor, OnCategoryClickListener listener, boolean isCategoriesInGrid) {
         mCursor = cursor;
         mListener = listener;
+        mIsCategoriesInGrid = isCategoriesInGrid;
     }
 
     @Override
     public CategoriesAdapter.CategoriesAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View rowView = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_categories_list_row, parent, false);
+        View rowView = LayoutInflater.from(parent.getContext()).inflate(
+                mIsCategoriesInGrid ? R.layout.main_categories_grid_list_item : R.layout.main_categories_list_row,
+                parent,
+                false
+        );
 
         return new CategoriesAdapterViewHolder(rowView);
     }
@@ -37,7 +43,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 
         holder.mIconView.setImageResource(mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
         holder.mNameView.setText(mCursor.getString(mCursor.getColumnIndex(MainCategoriesTable.FIELD_NAME)));
-        holder.mValueView.setText("0%");
+        if (holder.mValueView != null) {
+            holder.mValueView.setText("0%");
+        }
     }
 
     @Override
@@ -64,7 +72,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 
             mIconView = (ImageView) itemView.findViewById(R.id.iv_icon);
             mNameView = (TextView) itemView.findViewById(R.id.tv_name);
-            mValueView = (TextView) itemView.findViewById(R.id.tv_value);
+            if (itemView.findViewById(R.id.tv_value) != null) {
+                mValueView = (TextView) itemView.findViewById(R.id.tv_value);
+            }
             itemView.setOnClickListener(this);
         }
 

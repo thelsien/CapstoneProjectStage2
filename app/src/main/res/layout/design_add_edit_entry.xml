@@ -27,7 +27,7 @@
             android:layout_weight="9">
 
             <EditText
-                android:id="@+id/edittext"
+                android:id="@+id/et_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
