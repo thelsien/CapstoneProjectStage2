@@ -1,6 +1,5 @@
 package apps.nanodegree.thelsien.capstone;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +23,7 @@ import java.util.Calendar;
 import apps.nanodegree.thelsien.capstone.adapters.CategoriesAdapter;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
+import apps.nanodegree.thelsien.capstone.data.SpendingsTableConfig;
 
 /**
  * Created by frodo on 2016. 11. 10..
@@ -33,7 +33,26 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
 
     private static final String TAG = CategoryChooserFragment.class.getSimpleName();
     private static final int CATEGORY_LOADER = 2;
+    private static final String ARGUMENTS_VALUE = "chooser_value";
+    private static final String ARGUMENTS_NOTE = "chooser_note";
+    private static final String ARGUMENTS_CATEGORY_ID = "chooser_category_id";
+    private static final String ARGUMENTS_ENTRY_ID = "chooser_entry_id";
+
     private CategoriesAdapter mAdapter;
+
+    public static CategoryChooserFragment getInstance(int categoryId, int entryId, float value, String note) {
+        CategoryChooserFragment f = new CategoryChooserFragment();
+
+        Bundle args = new Bundle();
+        args.putInt(ARGUMENTS_CATEGORY_ID, categoryId);
+        args.putFloat(ARGUMENTS_VALUE, value);
+        args.putString(ARGUMENTS_NOTE, note);
+        args.putInt(ARGUMENTS_ENTRY_ID, entryId);
+
+        f.setArguments(args);
+
+        return f;
+    }
 
     @Nullable
     @Override
@@ -57,40 +76,33 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
     public void onCategoryClicked(int categoryId) {
         Toast.makeText(getContext(), String.valueOf(categoryId), Toast.LENGTH_SHORT).show();
 
-        ContentValues values = new ContentValues();
-
-        values.put("category_id", 1);
-        values.put("value", 1100);
-        values.put("note", "NewEntry");
-
         Calendar cal = Calendar.getInstance();
-        values.put("date", cal.getTimeInMillis() / 1000);
+        SpendingsTableConfig config = new SpendingsTableConfig();
+        Bundle args = getArguments();
 
-        Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, values);
-        if (uri != null) {
-            Log.d(TAG, "Success");
+        config.categoryId = categoryId;
+        config.value = args.getFloat(ARGUMENTS_VALUE);
+        config.note = args.getString(ARGUMENTS_NOTE);
+        config.date = cal.getTimeInMillis() / 1000;
 
-            Cursor c = getContext().getContentResolver().query(
-                    SpendingsTable.CONTENT_URI,
-                    null, null, null, null
-            );
+        if (args.getInt(ARGUMENTS_CATEGORY_ID) == -1) {
+            Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false));
+            if (uri != null) {
+                Log.d(TAG, "Success");
 
-            if (c != null) {
-                c.moveToFirst();
-                while (!c.isAfterLast()) {
-                    Log.d(TAG, "cat_id: " + c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID)));
-                    Log.d(TAG, "value: " + c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE)));
-                    Log.d(TAG, "note: " + c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
-                    Log.d(TAG, "date: " + c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE)));
-                    c.moveToNext();
-                }
-                c.close();
+                getActivity().finish();
+            } else {
+                Log.d(TAG, "Error, uri is null after insert");
             }
-
-//                    getLoaderManager().restartLoader(SPENDINGS_LOADER, null, CategoryDetailsFragment.this);
-            getActivity().finish();
         } else {
-            Log.d(TAG, "Error, uri is null after instert");
+            int rowsUpdated = getContext().getContentResolver().update(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false), SpendingsTable.FIELD_ID + " = ?", new String[]{String.valueOf(args.getInt(ARGUMENTS_ENTRY_ID))});
+
+            if (rowsUpdated == 1) {
+                Toast.makeText(getContext(), "Entry updated", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Zero or more than 1 rows were affected.", Toast.LENGTH_SHORT).show();
+            }
+            getActivity().finish();
         }
     }
 

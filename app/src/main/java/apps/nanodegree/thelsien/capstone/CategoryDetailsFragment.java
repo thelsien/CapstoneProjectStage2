@@ -12,18 +12,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import apps.nanodegree.thelsien.capstone.adapters.SpendingsAdapter;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
+import apps.nanodegree.thelsien.capstone.data.SpendingsTableConfig;
 
 /**
  * Created by frodo on 2016. 11. 08..
  */
 
-public class CategoryDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CategoryDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SpendingsAdapter.OnEntryClickedListener {
 
     public static final String TAG = CategoryDetailsFragment.class.getSimpleName();
 
@@ -50,7 +52,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        mAdapter = new SpendingsAdapter(getContext(), null);
+        mAdapter = new SpendingsAdapter(getContext(), null, this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -58,6 +60,8 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AddEditEntryActivity.class);
+                intent.putExtra(AddEditEntryFragment.ARGUMENT_CATEGORY_ID, mCategoryId);
+
                 getActivity().startActivity(intent);
             }
         });
@@ -79,7 +83,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
                 null,
                 SpendingsTable.FIELD_CATEGORY_ID + " = ?",
                 new String[]{String.valueOf(mCategoryId)},
-                null
+                SpendingsTable.FIELD_DATE + " ASC"
         );
     }
 
@@ -91,5 +95,33 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onEntryClicked(int entryId) {
+        Cursor c = getContext().getContentResolver().query(
+                SpendingsTableConfig.getUriForSingleEntry(entryId),
+                null,
+                null,
+                null,
+                null
+        );
+
+        if (c != null) {
+            c.moveToFirst();
+
+            Log.d(TAG, "id: " + c.getInt(c.getColumnIndex(SpendingsTable.FIELD_ID)));
+            Log.d(TAG, "category_id: " + c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID)));
+            Log.d(TAG, "value: " + c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE)));
+            Log.d(TAG, "note: " + c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
+            Log.d(TAG, "date: " + c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE)));
+
+            c.close();
+        }
+
+        Intent intent = new Intent(getContext(), AddEditEntryActivity.class);
+        intent.setData(SpendingsTableConfig.getUriForSingleEntry(entryId));
+
+        startActivity(intent);
     }
 }

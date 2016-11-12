@@ -1,0 +1,235 @@
+package apps.nanodegree.thelsien.capstone;
+
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.Calendar;
+
+import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
+import apps.nanodegree.thelsien.capstone.data.MainCategoriesTableConfig;
+import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
+import apps.nanodegree.thelsien.capstone.data.SpendingsTableConfig;
+
+/**
+ * Created by frodo on 2016. 11. 10..
+ */
+public class AddEditEntryFragment extends Fragment {
+
+    public static final String ARGUMENT_ENTRY_URI = "entry_uri";
+    public static final String ARGUMENT_CATEGORY_ID = "category_id";
+
+    private static final String TAG = AddEditEntryFragment.class.getSimpleName();
+
+    private Uri mUri;
+    private int mCategoryId;
+    private int mEntryId = -1;
+    private EditText mValueEditText;
+    private EditText mNoteEditText;
+    private Button mChooseCategoryButton;
+
+    public static AddEditEntryFragment getInstance(Uri uri, int categoryId) {
+        AddEditEntryFragment f = new AddEditEntryFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable(ARGUMENT_ENTRY_URI, uri);
+        args.putInt(ARGUMENT_CATEGORY_ID, categoryId);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        if (mUri != null) {
+            menu.add(Menu.NONE, 1, 100, "Delete")
+                    .setIcon(R.drawable.ic_close_dark)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            menu.add(Menu.NONE, 2, 200, "Save")
+                    .setIcon(R.drawable.ic_golf_course_black_48dp)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 1:
+                int deletedRows = getContext().getContentResolver().delete(
+                        SpendingsTable.CONTENT_URI,
+                        SpendingsTable.FIELD_ID + " = ?",
+                        new String[]{mUri.getLastPathSegment()}
+                );
+
+                if (deletedRows == 1) {
+                    Toast.makeText(getContext(), "Deleted entry", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Zero or more than 1 row was affected.", Toast.LENGTH_SHORT).show();
+                }
+
+                getActivity().finish();
+
+                break;
+            case 2:
+                Cursor c = getContext().getContentResolver().query(
+                        mUri,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                c.moveToFirst();
+
+                SpendingsTableConfig config = new SpendingsTableConfig();
+                config.id = Integer.valueOf(mUri.getLastPathSegment());
+                config.value = Float.valueOf(mValueEditText.getText().toString());
+                config.note = mNoteEditText.getText().toString();
+                config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
+                config.categoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
+
+                c.close();
+
+                int rowsUpdated = getContext().getContentResolver().update(
+                        SpendingsTable.CONTENT_URI,
+                        SpendingsTable.getContentValues(config, true),
+                        SpendingsTable.FIELD_ID + " = ?",
+                        new String[]{mUri.getLastPathSegment()}
+                );
+
+                if (rowsUpdated == 1) {
+                    Toast.makeText(getContext(), "Saved successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Zero or more than 1 row was affected", Toast.LENGTH_SHORT).show();
+                }
+
+                getActivity().finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_add_edit_entry, container, false);
+
+        Bundle args = getArguments();
+        mUri = args.getParcelable(ARGUMENT_ENTRY_URI);
+        mCategoryId = args.getInt(ARGUMENT_CATEGORY_ID, -1);
+        mValueEditText = (EditText) rootView.findViewById(R.id.et_value);
+        mNoteEditText = (EditText) rootView.findViewById(R.id.et_note);
+        mChooseCategoryButton = (Button) rootView.findViewById(R.id.btn_choose_category);
+        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //When editing a category's entry
+        if (mUri != null) {
+            mEntryId = Integer.parseInt(mUri.getLastPathSegment());
+
+            Cursor c = getContext().getContentResolver().query(
+                    mUri,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+
+            if (c != null) {
+                c.moveToFirst();
+
+                mValueEditText.setText(String.valueOf(c.getInt(c.getColumnIndex(SpendingsTable.FIELD_VALUE))));
+                mNoteEditText.setText(c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
+                mChooseCategoryButton.setText("Change category");
+                mCategoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
+
+                mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                                .addToBackStack("other_fragment")
+                                .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(
+                                        mCategoryId,
+                                        mEntryId,
+                                        Float.valueOf(mValueEditText.getText().toString().trim()),
+                                        mNoteEditText.getText().toString().trim())
+                                )
+                                .commit();
+                    }
+                });
+
+                c.close();
+            }
+
+
+        } else if (mCategoryId != -1) { //when adding a new entry from a category screen.
+            Cursor c = getContext().getContentResolver().query(MainCategoriesTableConfig.getUriCategoryWithId(mCategoryId), null, null, null, null);
+            c.moveToFirst();
+            mChooseCategoryButton.setText("Save to " + c.getString(c.getColumnIndex(MainCategoriesTable.FIELD_NAME)) + " category");
+            c.close();
+
+            mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), String.valueOf(mCategoryId), Toast.LENGTH_SHORT).show();
+
+                    Calendar cal = Calendar.getInstance();
+                    SpendingsTableConfig config = new SpendingsTableConfig();
+
+                    config.categoryId = mCategoryId;
+                    config.value = Float.valueOf(mValueEditText.getText().toString().trim());
+                    config.note = mNoteEditText.getText().toString().trim();
+                    config.date = cal.getTimeInMillis() / 1000;
+
+                    Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false));
+                    if (uri != null) {
+                        Log.d(TAG, "Success");
+
+                        getActivity().finish();
+                    } else {
+                        Log.d(TAG, "Error, uri is null after insert");
+                    }
+                }
+            });
+        } else { //when adding a new element from the main screen
+            mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                            .addToBackStack("other_fragment")
+                            .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(-1, mEntryId, Float.valueOf(mValueEditText.getText().toString().trim()), mNoteEditText.getText().toString().trim()))
+                            .commit();
+                }
+            });
+        }
+
+        return rootView;
+    }
+}

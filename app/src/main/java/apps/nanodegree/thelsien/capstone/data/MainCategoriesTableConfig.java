@@ -1,5 +1,7 @@
 package apps.nanodegree.thelsien.capstone.data;
 
+import android.net.Uri;
+
 import ckm.simple.sql_provider.annotation.SimpleSQLColumn;
 import ckm.simple.sql_provider.annotation.SimpleSQLTable;
 
@@ -17,4 +19,10 @@ public class MainCategoriesTableConfig {
 
     @SimpleSQLColumn("icon_res")
     public int iconRes;
+
+    public static Uri getUriCategoryWithId(int categoryId) {
+        return MainCategoriesTable.CONTENT_URI.buildUpon()
+                .appendPath(Integer.toString(categoryId))
+                .build();
+    }
 }

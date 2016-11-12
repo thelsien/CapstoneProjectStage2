@@ -7,6 +7,7 @@ import android.database.Cursor;
 import java.util.Vector;
 
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
+import apps.nanodegree.thelsien.capstone.data.MainCategoriesTableConfig;
 
 /**
  * Created by frodo on 2016. 11. 08..
@@ -41,10 +42,10 @@ public class Utility {
             Vector<ContentValues> cVVector = new Vector<>();
 
             for (int i = 0; i < categoryNames.length; i++) {
-                ContentValues values = new ContentValues();
-                values.put("name", categoryNames[i]);
-                values.put("icon_res", categoryIconIds[i]);
-                cVVector.add(values);
+                MainCategoriesTableConfig config = new MainCategoriesTableConfig();
+                config.name = categoryNames[i];
+                config.iconRes = categoryIconIds[i];
+                cVVector.add(MainCategoriesTable.getContentValues(config, false));
             }
 
             ContentValues[] cVArray = new ContentValues[cVVector.size()];

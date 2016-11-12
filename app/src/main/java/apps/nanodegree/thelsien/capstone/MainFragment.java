@@ -47,6 +47,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mCategoryAdapter = new CategoriesAdapter(null, this, false);
         mRecyclerView.setAdapter(mCategoryAdapter);
 
+        rootView.findViewById(R.id.fab_open_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), AddEditEntryActivity.class);
+
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 

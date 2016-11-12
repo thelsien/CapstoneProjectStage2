@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class CategoryDetailsActivity extends AppCompatActivity {
 
-    public static final String INTENT_EXTRA_CATEGORY_ID = "category_id";
+    public static final String INTENT_EXTRA_CATEGORY_ID = "category_uri";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

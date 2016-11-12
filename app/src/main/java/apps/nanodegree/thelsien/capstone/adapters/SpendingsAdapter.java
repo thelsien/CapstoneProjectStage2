@@ -22,12 +22,14 @@ public class SpendingsAdapter extends RecyclerView.Adapter<SpendingsAdapter.Spen
 
     private Context mContext;
     private Cursor mCursor;
+    private OnEntryClickedListener mListener;
 
-    public SpendingsAdapter(Context context, Cursor cursor) {
+    public SpendingsAdapter(Context context, Cursor cursor, OnEntryClickedListener listener) {
         super();
 
         this.mContext = context;
         this.mCursor = cursor;
+        this.mListener = listener;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class SpendingsAdapter extends RecyclerView.Adapter<SpendingsAdapter.Spen
         notifyDataSetChanged();
     }
 
-    public class SpendingsViewHolder extends RecyclerView.ViewHolder {
+    public class SpendingsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mValueView;
         public TextView mNoteView;
@@ -76,6 +78,19 @@ public class SpendingsAdapter extends RecyclerView.Adapter<SpendingsAdapter.Spen
             mValueView = (TextView) itemView.findViewById(R.id.tv_value);
             mNoteView = (TextView) itemView.findViewById(R.id.tv_note);
             mDateView = (TextView) itemView.findViewById(R.id.tv_date);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+
+            mListener.onEntryClicked(mCursor.getInt(mCursor.getColumnIndex(SpendingsTable.FIELD_ID)));
+        }
+    }
+
+    public interface OnEntryClickedListener {
+        void onEntryClicked(int entryId);
     }
 }
