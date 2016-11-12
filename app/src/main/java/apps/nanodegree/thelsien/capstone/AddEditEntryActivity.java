@@ -22,9 +22,10 @@ public class AddEditEntryActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Uri entryUri = getIntent().getData();
             int categoryId = getIntent().getIntExtra(AddEditEntryFragment.ARGUMENT_CATEGORY_ID, -1);
+            boolean isIncome = getIntent().getBooleanExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, false);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.category_add_edit_container, AddEditEntryFragment.getInstance(entryUri == null ? null : entryUri, categoryId))
+                    .add(R.id.category_add_edit_container, AddEditEntryFragment.getInstance(entryUri == null ? null : entryUri, categoryId, isIncome))
                     .commit();
         }
     }
