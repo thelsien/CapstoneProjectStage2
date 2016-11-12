@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 public class CategoryDetailsActivity extends AppCompatActivity {
 
     public static final String INTENT_EXTRA_CATEGORY_ID = "category_uri";
+    public static final String INTENT_EXTRA_IS_INCOME = "show_income";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class CategoryDetailsActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             arguments.putInt(INTENT_EXTRA_CATEGORY_ID, getIntent().getIntExtra(INTENT_EXTRA_CATEGORY_ID, -1));
+            arguments.putBoolean(INTENT_EXTRA_IS_INCOME, getIntent().getBooleanExtra(INTENT_EXTRA_IS_INCOME, false));
 
             CategoryDetailsFragment fragment = new CategoryDetailsFragment();
             fragment.setArguments(arguments);

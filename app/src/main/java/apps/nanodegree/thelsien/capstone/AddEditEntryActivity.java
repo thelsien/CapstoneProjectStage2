@@ -11,8 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 
 public class AddEditEntryActivity extends AppCompatActivity {
 
-    public static final String INTENT_EXTRA_IS_ADD_ENTRY = "is_add_entry";
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

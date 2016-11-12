@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_incomes_list"
+        android:icon="@drawable/ic_kitchen_black_48dp"
+        android:orderInCategory="1"
+        android:title="Incomes"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@drawable/ic_free_breakfast_black_48dp"
+        android:orderInCategory="2"
+        android:title="Settings"
+        app:showAsAction="ifRoom"/>
+</menu>

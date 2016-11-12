@@ -1,5 +1,7 @@
 package apps.nanodegree.thelsien.capstone.data;
 
+import android.net.Uri;
+
 import ckm.simple.sql_provider.annotation.SimpleSQLColumn;
 import ckm.simple.sql_provider.annotation.SimpleSQLTable;
 
@@ -21,4 +23,10 @@ public class IncomesTableConfig {
 
     @SimpleSQLColumn(value = "date")
     public long date;
+
+    public static Uri getUriForSingleIncome(int entryId) {
+        return IncomesTable.CONTENT_URI.buildUpon()
+                .appendPath(String.valueOf(entryId))
+                .build();
+    }
 }

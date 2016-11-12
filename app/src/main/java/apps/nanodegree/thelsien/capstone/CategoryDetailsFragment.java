@@ -12,12 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import apps.nanodegree.thelsien.capstone.adapters.SpendingsAdapter;
+import apps.nanodegree.thelsien.capstone.data.IncomesTable;
+import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTableConfig;
 
@@ -31,6 +32,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
 
     private static final int SPENDINGS_LOADER = 1;
 
+    private boolean mIsShouldShowIncome;
     private int mCategoryId;
     private RecyclerView mRecyclerView;
     private SpendingsAdapter mAdapter;
@@ -40,6 +42,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle arguments = getArguments();
         mCategoryId = arguments.getInt(CategoryDetailsActivity.INTENT_EXTRA_CATEGORY_ID);
+        mIsShouldShowIncome = arguments.getBoolean(CategoryDetailsActivity.INTENT_EXTRA_IS_INCOME, false);
 
         View rootView = inflater.inflate(R.layout.fragment_category_details, container, false);
 
@@ -60,7 +63,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AddEditEntryActivity.class);
-                intent.putExtra(AddEditEntryFragment.ARGUMENT_CATEGORY_ID, mCategoryId);
+                intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, true);
 
                 getActivity().startActivity(intent);
             }
@@ -77,6 +80,17 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if (mIsShouldShowIncome) {
+            return new CursorLoader(
+                    getContext(),
+                    IncomesTable.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    IncomesTable.FIELD_DATE + " ASC"
+            );
+        }
+
         return new CursorLoader(
                 getContext(),
                 SpendingsTable.CONTENT_URI,
@@ -99,28 +113,9 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onEntryClicked(int entryId) {
-        Cursor c = getContext().getContentResolver().query(
-                SpendingsTableConfig.getUriForSingleEntry(entryId),
-                null,
-                null,
-                null,
-                null
-        );
-
-        if (c != null) {
-            c.moveToFirst();
-
-            Log.d(TAG, "id: " + c.getInt(c.getColumnIndex(SpendingsTable.FIELD_ID)));
-            Log.d(TAG, "category_id: " + c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID)));
-            Log.d(TAG, "value: " + c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE)));
-            Log.d(TAG, "note: " + c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
-            Log.d(TAG, "date: " + c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE)));
-
-            c.close();
-        }
-
         Intent intent = new Intent(getContext(), AddEditEntryActivity.class);
-        intent.setData(SpendingsTableConfig.getUriForSingleEntry(entryId));
+        intent.setData(mIsShouldShowIncome ? IncomesTableConfig.getUriForSingleIncome(entryId) : SpendingsTableConfig.getUriForSingleEntry(entryId));
+        intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, true);
 
         startActivity(intent);
     }

@@ -2,7 +2,6 @@ package apps.nanodegree.thelsien.capstone;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +12,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -35,7 +37,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private static final int CATEGORIES_LOADER = 0;
 
     private RecyclerView mRecyclerView;
-    private Uri mUri;
     private CategoriesAdapter mCategoryAdapter;
 
     private boolean isFabOpen = false;
@@ -47,6 +48,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private Animation mRotateForward;
     private Animation mFabOpen;
     private Animation mFabClose;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -89,6 +97,26 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             mIncomeFab.setClickable(true);
             isFabOpen = true;
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_incomes_list:
+                Intent intent = new Intent(getContext(), CategoryDetailsActivity.class);
+                intent.putExtra(CategoryDetailsActivity.INTENT_EXTRA_IS_INCOME, true);
+
+                startActivity(intent);
+                break;
+            case R.id.menu_settings:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

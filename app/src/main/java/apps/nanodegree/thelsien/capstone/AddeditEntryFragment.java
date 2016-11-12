@@ -46,7 +46,9 @@ public class AddEditEntryFragment extends Fragment {
     private boolean mIsIncome;
     private EditText mValueEditText;
     private EditText mNoteEditText;
+    private TextInputLayout mValueTextInputLayout;
     private Button mChooseCategoryButton;
+    private TextView mTitleTextView;
 
     public static AddEditEntryFragment getInstance(Uri uri, int categoryId, boolean isIncome) {
         AddEditEntryFragment f = new AddEditEntryFragment();
@@ -79,14 +81,17 @@ public class AddEditEntryFragment extends Fragment {
         mValueEditText = (EditText) rootView.findViewById(R.id.et_value);
         mNoteEditText = (EditText) rootView.findViewById(R.id.et_note);
         mChooseCategoryButton = (Button) rootView.findViewById(R.id.btn_choose_category);
+        mValueTextInputLayout = ((TextInputLayout) rootView.findViewById(R.id.til_value));
+        mTitleTextView = ((TextView) rootView.findViewById(R.id.tv_title));
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (!mIsIncome) {
-            //When editing a category's entry
             if (mUri != null) {
+                //When editing a category's entry
+                mTitleTextView.setText("Edit spending entry");
                 mEntryId = Integer.parseInt(mUri.getLastPathSegment());
 
                 Cursor c = getContext().getContentResolver().query(
@@ -125,7 +130,8 @@ public class AddEditEntryFragment extends Fragment {
                 }
 
 
-            } else if (mCategoryId != -1) { //when adding a new entry from a category screen.
+            } else if (mCategoryId != -1) {
+                //when adding a new entry from a category screen.
                 Cursor c = getContext().getContentResolver().query(MainCategoriesTableConfig.getUriCategoryWithId(mCategoryId), null, null, null, null);
                 c.moveToFirst();
                 mChooseCategoryButton.setText("Save to " + c.getString(c.getColumnIndex(MainCategoriesTable.FIELD_NAME)) + " category");
@@ -167,30 +173,54 @@ public class AddEditEntryFragment extends Fragment {
                 });
             }
         } else {
-            //when adding new income
-            ((TextView) rootView.findViewById(R.id.tv_title)).setText("Add an income");
-            ((TextInputLayout) rootView.findViewById(R.id.til_value)).setHint("Income's value");
-            mChooseCategoryButton.setText("Add to incomes");
-            mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Calendar cal = Calendar.getInstance();
-                    IncomesTableConfig config = new IncomesTableConfig();
+            mValueTextInputLayout.setHint("Income's value");
 
-                    config.value = Float.valueOf(mValueEditText.getText().toString().trim());
-                    config.note = mNoteEditText.getText().toString().trim();
-                    config.date = cal.getTimeInMillis() / 1000;
+            if (mUri != null) {
+                //when editing an income
+                mTitleTextView.setText("Edit income");
+                Cursor c = getContext().getContentResolver().query(
+                        mUri,
+                        null,
+                        null,
+                        null,
+                        null
+                );
 
-                    Uri uri = getContext().getContentResolver().insert(IncomesTable.CONTENT_URI, IncomesTable.getContentValues(config, false));
-                    if (uri != null) {
-                        Log.d(TAG, "Success");
+                if (c != null) {
+                    c.moveToFirst();
 
-                        getActivity().finish();
-                    } else {
-                        Log.d(TAG, "Error, uri is null after insert");
-                    }
+                    mValueEditText.setText(String.valueOf(c.getFloat(c.getColumnIndex(IncomesTable.FIELD_VALUE))));
+                    mNoteEditText.setText(c.getString(c.getColumnIndex(IncomesTable.FIELD_NOTE)));
+
+                    c.close();
                 }
-            });
+
+                mChooseCategoryButton.setVisibility(View.GONE);
+            } else {
+                //when adding new income
+                mTitleTextView.setText("Add an income");
+                mChooseCategoryButton.setText("Add to incomes");
+                mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Calendar cal = Calendar.getInstance();
+                        IncomesTableConfig config = new IncomesTableConfig();
+
+                        config.value = Float.valueOf(mValueEditText.getText().toString().trim());
+                        config.note = mNoteEditText.getText().toString().trim();
+                        config.date = cal.getTimeInMillis() / 1000;
+
+                        Uri uri = getContext().getContentResolver().insert(IncomesTable.CONTENT_URI, IncomesTable.getContentValues(config, false));
+                        if (uri != null) {
+                            Log.d(TAG, "Success");
+
+                            getActivity().finish();
+                        } else {
+                            Log.d(TAG, "Error, uri is null after insert");
+                        }
+                    }
+                });
+            }
         }
 
         return rootView;
@@ -214,20 +244,10 @@ public class AddEditEntryFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 1:
-                int deletedRows = getContext().getContentResolver().delete(
-                        SpendingsTable.CONTENT_URI,
-                        SpendingsTable.FIELD_ID + " = ?",
-                        new String[]{mUri.getLastPathSegment()}
+                deleteEntryFromDB(
+                        mIsIncome ? IncomesTable.CONTENT_URI : SpendingsTable.CONTENT_URI,
+                        mIsIncome ? IncomesTable.FIELD_ID : SpendingsTable.FIELD_ID
                 );
-
-                if (deletedRows == 1) {
-                    Toast.makeText(getContext(), "Deleted entry", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Zero or more than 1 row was affected.", Toast.LENGTH_SHORT).show();
-                }
-
-                getActivity().finish();
-
                 break;
             case 2:
                 Cursor c = getContext().getContentResolver().query(
@@ -240,21 +260,37 @@ public class AddEditEntryFragment extends Fragment {
 
                 c.moveToFirst();
 
-                SpendingsTableConfig config = new SpendingsTableConfig();
-                config.id = Integer.valueOf(mUri.getLastPathSegment());
-                config.value = Float.valueOf(mValueEditText.getText().toString());
-                config.note = mNoteEditText.getText().toString();
-                config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
-                config.categoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
+                int rowsUpdated;
+                if (!mIsIncome) {
+                    SpendingsTableConfig config = new SpendingsTableConfig();
+                    config.id = Integer.valueOf(mUri.getLastPathSegment());
+                    config.value = Float.valueOf(mValueEditText.getText().toString());
+                    config.note = mNoteEditText.getText().toString();
+                    config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
+                    config.categoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
+
+                    rowsUpdated = getContext().getContentResolver().update(
+                            SpendingsTable.CONTENT_URI,
+                            SpendingsTable.getContentValues(config, true),
+                            SpendingsTable.FIELD_ID + " = ?",
+                            new String[]{mUri.getLastPathSegment()}
+                    );
+                } else {
+                    IncomesTableConfig config = new IncomesTableConfig();
+                    config.id = Integer.valueOf(mUri.getLastPathSegment());
+                    config.value = Float.valueOf(mValueEditText.getText().toString());
+                    config.note = mNoteEditText.getText().toString();
+                    config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
+
+                    rowsUpdated = getContext().getContentResolver().update(
+                            IncomesTable.CONTENT_URI,
+                            IncomesTable.getContentValues(config, true),
+                            IncomesTable.FIELD_ID + " = ?",
+                            new String[]{mUri.getLastPathSegment()}
+                    );
+                }
 
                 c.close();
-
-                int rowsUpdated = getContext().getContentResolver().update(
-                        SpendingsTable.CONTENT_URI,
-                        SpendingsTable.getContentValues(config, true),
-                        SpendingsTable.FIELD_ID + " = ?",
-                        new String[]{mUri.getLastPathSegment()}
-                );
 
                 if (rowsUpdated == 1) {
                     Toast.makeText(getContext(), "Saved successfully", Toast.LENGTH_SHORT).show();
@@ -266,5 +302,21 @@ public class AddEditEntryFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteEntryFromDB(Uri contentUri, String columnId) {
+        int deletedRows = getContext().getContentResolver().delete(
+                contentUri,
+                columnId + " = ?",
+                new String[]{mUri.getLastPathSegment()}
+        );
+
+        if (deletedRows == 1) {
+            Toast.makeText(getContext(), "Deleted entry", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Zero or more than 1 row was affected.", Toast.LENGTH_SHORT).show();
+        }
+
+        getActivity().finish();
     }
 }
