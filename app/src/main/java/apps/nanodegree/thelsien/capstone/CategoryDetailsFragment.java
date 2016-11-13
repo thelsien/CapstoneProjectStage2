@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import apps.nanodegree.thelsien.capstone.adapters.AddEditEntryFragment;
 import apps.nanodegree.thelsien.capstone.adapters.SpendingsAdapter;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;

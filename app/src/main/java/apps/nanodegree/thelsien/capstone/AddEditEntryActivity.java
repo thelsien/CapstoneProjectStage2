@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import apps.nanodegree.thelsien.capstone.adapters.AddEditEntryFragment;
+
 /**
  * Created by frodo on 2016. 11. 10..
  */

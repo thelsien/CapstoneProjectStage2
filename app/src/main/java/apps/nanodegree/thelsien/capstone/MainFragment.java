@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import apps.nanodegree.thelsien.capstone.adapters.AddEditEntryFragment;
 import apps.nanodegree.thelsien.capstone.adapters.CategoriesAdapter;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 
