@@ -5,7 +5,10 @@
     <Preference
         android:key="change_time_iterval"
         android:title="Time interval"/>
-    <Preference
+    <ListPreference
+        android:defaultValue="@string/default_currency_value"
+        android:entries="@array/currencies_names"
+        android:entryValues="@array/currencies"
         android:key="change_currency"
         android:title="Change currency"/>
     <Preference
