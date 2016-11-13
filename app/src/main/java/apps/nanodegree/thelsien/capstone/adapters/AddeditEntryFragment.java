@@ -1,4 +1,4 @@
-package apps.nanodegree.thelsien.capstone;
+package apps.nanodegree.thelsien.capstone.adapters;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import apps.nanodegree.thelsien.capstone.CategoryChooserFragment;
+import apps.nanodegree.thelsien.capstone.R;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
