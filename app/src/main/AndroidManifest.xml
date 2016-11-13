@@ -32,6 +32,15 @@
                 android:value="apps.nanodegree.thelsien.capstone.MainActivity"/>
         </activity>
 
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/SettingsTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="apps.nanodegree.thelsien.capstone.MainActivity"/>
+        </activity>
+
         <provider
             android:name="apps.nanodegree.thelsien.capstone.data.CategoriesProvider"
             android:authorities="apps.nanodegree.thelsien.capstone.authority"

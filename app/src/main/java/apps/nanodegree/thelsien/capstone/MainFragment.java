@@ -106,14 +106,18 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.menu_incomes_list:
-                Intent intent = new Intent(getContext(), CategoryDetailsActivity.class);
+                intent = new Intent(getContext(), CategoryDetailsActivity.class);
                 intent.putExtra(CategoryDetailsActivity.INTENT_EXTRA_IS_INCOME, true);
 
                 startActivity(intent);
                 break;
             case R.id.menu_settings:
+                intent = new Intent(getContext(), SettingsActivity.class);
+
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
