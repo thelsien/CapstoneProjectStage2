@@ -12,9 +12,9 @@
         android:key="@string/prefs_current_currency_key"
         android:title="Change currency"/>
     <Preference
-        android:key="import_data"
+        android:key="@string/prefs_import_data_from_csv"
         android:title="Import data"/>
     <Preference
-        android:key="export_data"
+        android:key="@string/prefs_export_data_to_csv"
         android:title="Export data"/>
 </PreferenceScreen>

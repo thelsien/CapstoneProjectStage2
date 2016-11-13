@@ -5,6 +5,8 @@
     <string name="prefs_current_currency_key">prefs_current_currency_key</string>
     <string name="prefs_source_currency_key">prefs_source_currency_key</string>
     <string name="prefs_is_first_run_done">prefs_is_first_run_done</string>
+    <string name="prefs_export_data_to_csv">prefs_export_data_csv_key</string>
+    <string name="prefs_import_data_from_csv">prefs_import_data_from_csv_key</string>
 
     <string-array name="currencies">
         <item>EUR</item>
