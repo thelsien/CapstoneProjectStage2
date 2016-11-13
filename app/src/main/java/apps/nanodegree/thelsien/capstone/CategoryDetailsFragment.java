@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import apps.nanodegree.thelsien.capstone.adapters.SpendingsAdapter;
+import apps.nanodegree.thelsien.capstone.adapters.CategoryEntryAdapter;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
@@ -26,7 +26,7 @@ import apps.nanodegree.thelsien.capstone.data.SpendingsTableConfig;
  * Created by frodo on 2016. 11. 08..
  */
 
-public class CategoryDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SpendingsAdapter.OnEntryClickedListener {
+public class CategoryDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CategoryEntryAdapter.OnEntryClickedListener {
 
     public static final String TAG = CategoryDetailsFragment.class.getSimpleName();
 
@@ -35,7 +35,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
     private boolean mIsShouldShowIncome;
     private int mCategoryId;
     private RecyclerView mRecyclerView;
-    private SpendingsAdapter mAdapter;
+    private CategoryEntryAdapter mAdapter;
 
     @Nullable
     @Override
@@ -55,7 +55,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        mAdapter = new SpendingsAdapter(getContext(), null, this);
+        mAdapter = new CategoryEntryAdapter(getContext(), null, this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -63,7 +63,10 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AddEditEntryActivity.class);
-                intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, true);
+                if (!mIsShouldShowIncome) {
+                    intent.putExtra(AddEditEntryFragment.ARGUMENT_CATEGORY_ID, mCategoryId);
+                }
+                intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, mIsShouldShowIncome);
 
                 getActivity().startActivity(intent);
             }

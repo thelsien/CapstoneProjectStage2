@@ -3,6 +3,7 @@ package apps.nanodegree.thelsien.capstone;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -49,6 +50,7 @@ public class AddEditEntryFragment extends Fragment {
     private TextInputLayout mValueTextInputLayout;
     private Button mChooseCategoryButton;
     private TextView mTitleTextView;
+    private TextView mCurrencyTextView;
 
     public static AddEditEntryFragment getInstance(Uri uri, int categoryId, boolean isIncome) {
         AddEditEntryFragment f = new AddEditEntryFragment();
@@ -83,10 +85,19 @@ public class AddEditEntryFragment extends Fragment {
         mChooseCategoryButton = (Button) rootView.findViewById(R.id.btn_choose_category);
         mValueTextInputLayout = ((TextInputLayout) rootView.findViewById(R.id.til_value));
         mTitleTextView = ((TextView) rootView.findViewById(R.id.tv_title));
+        mCurrencyTextView = ((TextView) rootView.findViewById(R.id.tv_currency));
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mCurrencyTextView.setText(
+                PreferenceManager.getDefaultSharedPreferences(getContext())
+                        .getString
+                                (getString(R.string.prefs_current_currency_key),
+                                        getString(R.string.default_currency)
+                                )
+        );
 
         if (!mIsIncome) {
             if (mUri != null) {

@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">MoneyTrackR</string>
-    <string name="default_currency_value">USD</string>
+
+    <string name="default_currency">USD</string>
+    <string name="prefs_current_currency_key">prefs_current_currency_key</string>
+    <string name="prefs_source_currency_key">prefs_source_currency_key</string>
+    <string name="prefs_is_first_run_done">prefs_is_first_run_done</string>
 
     <string-array name="currencies">
         <item>EUR</item>

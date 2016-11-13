@@ -10,7 +10,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Utility.setupMainCategories(this);
+        Utility.setupFirstRunDatas(this);
 
         setContentView(R.layout.activity_main);
 

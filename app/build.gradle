@@ -18,9 +18,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildTypes.each {
-        it.buildConfigField 'String', 'CURRENCY_LAYER_API_KEY', CurrencyLayerAPIKey
-    }
 }
 
 dependencies {
