@@ -13,6 +13,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+
+import com.borax12.materialdaterangepicker.date.DatePickerDialog;
+
+import java.util.Calendar;
 
 import apps.nanodegree.thelsien.capstone.asynctasks.CurrencyChangeAsyncTask;
 import apps.nanodegree.thelsien.capstone.asynctasks.ExportDataToCSVAsyncTask;
@@ -21,7 +26,7 @@ import apps.nanodegree.thelsien.capstone.asynctasks.ImportDataFromCSVAsyncTask;
 /**
  * Created by frodo on 2016. 11. 13..
  */
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, ActivityCompat.OnRequestPermissionsResultCallback, DatePickerDialog.OnDateSetListener {
 
     public static final int FILE_CHOOSER_REQUEST_CODE = 1000;
 
@@ -37,6 +42,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         addPreferencesFromResource(R.xml.main_preferences);
         findPreference(getString(R.string.prefs_export_data_to_csv)).setOnPreferenceClickListener(this);
         findPreference(getString(R.string.prefs_import_data_from_csv)).setOnPreferenceClickListener(this);
+        findPreference(getString(R.string.prefs_time_interval)).setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -62,7 +68,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference.getKey().equals(getString(R.string.prefs_export_data_to_csv))) {
+        if (preference.getKey().equals(getString(R.string.prefs_time_interval))) {
+            Calendar cal = Calendar.getInstance();
+            DatePickerDialog dialog = DatePickerDialog.newInstance(this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+            dialog.show(getFragmentManager(), "datepickerdialog");
+        } else if (preference.getKey().equals(getString(R.string.prefs_export_data_to_csv))) {
             int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 new ExportDataToCSVAsyncTask(getActivity()).execute();
@@ -130,5 +140,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (requestCode == FILE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             new ImportDataFromCSVAsyncTask(getActivity()).execute(data.getData());
         }
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+        Log.d(TAG, String.valueOf(year) + " " + String.valueOf(monthOfYear + 1) + " " + String.valueOf(dayOfMonth) + " " + String.valueOf(yearEnd) + " " + String.valueOf(monthOfYearEnd + 1) + " " + String.valueOf(dayOfMonthEnd));
     }
 }

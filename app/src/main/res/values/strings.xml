@@ -11,6 +11,7 @@
     <string name="permission_explanation_message">CSV files can only be opened from (or written to) your phone, if you allow us to use your phone\'s storage.</string>
     <string name="permission_explanation_button">Okay</string>
     <string name="permission_needed">Permission denied, please go to options menu to grant access for the app.</string>
+    <string name="prefs_time_interval">prefs_time_interval_key</string>
 
     <string-array name="currencies">
         <item>EUR</item>

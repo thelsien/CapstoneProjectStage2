@@ -3,7 +3,7 @@
                   android:layout_width="match_parent"
                   android:layout_height="match_parent">
     <Preference
-        android:key="change_time_iterval"
+        android:key="@string/prefs_time_interval"
         android:title="Time interval"/>
     <ListPreference
         android:defaultValue="@string/default_currency"
