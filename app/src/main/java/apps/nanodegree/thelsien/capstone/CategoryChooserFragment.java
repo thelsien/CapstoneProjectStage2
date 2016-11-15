@@ -89,8 +89,6 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
             Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false));
             if (uri != null) {
                 Log.d(TAG, "Success");
-
-                getActivity().finish();
             } else {
                 Log.d(TAG, "Error, uri is null after insert");
             }
@@ -102,8 +100,11 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
             } else {
                 Toast.makeText(getContext(), "Zero or more than 1 rows were affected.", Toast.LENGTH_SHORT).show();
             }
-            getActivity().finish();
         }
+
+        Utility.notifyThroughContentResolver(getContext());
+
+        getActivity().finish();
     }
 
     @Override

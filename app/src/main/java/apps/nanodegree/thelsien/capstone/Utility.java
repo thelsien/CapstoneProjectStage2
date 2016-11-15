@@ -170,12 +170,14 @@ public class Utility {
     }
 
     public static float getCategoryValue(Context context, int categoryId) {
+        long startDate = Utility.getStartTimeForQuery(context);
+        long endDate = Utility.getEndTimeForQuery(context);
         float sum = 0;
         Cursor c = context.getContentResolver().query(
                 SpendingsTable.CONTENT_URI,
-                new String[]{SpendingsTable.FIELD_VALUE},
-                SpendingsTable.FIELD_CATEGORY_ID + " = ?",
-                new String[]{String.valueOf(categoryId)},
+                new String[]{SpendingsTable.FIELD_VALUE, SpendingsTable.FIELD_DATE},
+                SpendingsTable.FIELD_CATEGORY_ID + " = ? AND " + SpendingsTable.FIELD_DATE + " < ? AND " + SpendingsTable.FIELD_DATE + " >= ?",
+                new String[]{String.valueOf(categoryId), String.valueOf(endDate), String.valueOf(startDate)},
                 null
         );
 
@@ -191,5 +193,11 @@ public class Utility {
         }
 
         return sum;
+    }
+
+    public static void notifyThroughContentResolver(Context context) {
+        context.getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
+        context.getContentResolver().notifyChange(SpendingsTable.CONTENT_URI, null);
+        context.getContentResolver().notifyChange(IncomesTable.CONTENT_URI, null);
     }
 }

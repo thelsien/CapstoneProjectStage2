@@ -22,7 +22,7 @@ import java.util.Calendar;
 import apps.nanodegree.thelsien.capstone.asynctasks.CurrencyChangeAsyncTask;
 import apps.nanodegree.thelsien.capstone.asynctasks.ExportDataToCSVAsyncTask;
 import apps.nanodegree.thelsien.capstone.asynctasks.ImportDataFromCSVAsyncTask;
-import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
+import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 
 /**
  * Created by frodo on 2016. 11. 13..
@@ -73,6 +73,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                         cal.get(Calendar.MONTH),
                         cal.get(Calendar.DAY_OF_MONTH)
                 ).show(getFragmentManager(), "date_interval_picker");
+            } else {
+                getActivity().getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
             }
         }
     }
@@ -161,5 +163,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 .putInt(getString(R.string.custom_interval_end_month), monthOfYearEnd)
                 .putInt(getString(R.string.custom_interval_end_day), dayOfMonthEnd)
                 .commit();
+
+        getActivity().getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
     }
 }
