@@ -243,7 +243,7 @@ public class AddEditEntryFragment extends Fragment {
 
         if (mUri != null) {
             menu.add(Menu.NONE, 1, 100, "Delete")
-                    .setIcon(R.drawable.ic_close_dark)
+                    .setIcon(R.drawable.ic_clear_black_48dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             menu.add(Menu.NONE, 2, 200, "Save")
                     .setIcon(R.drawable.ic_golf_course_black_48dp)

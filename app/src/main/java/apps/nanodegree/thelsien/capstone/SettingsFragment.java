@@ -42,7 +42,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         addPreferencesFromResource(R.xml.main_preferences);
         findPreference(getString(R.string.prefs_export_data_to_csv)).setOnPreferenceClickListener(this);
         findPreference(getString(R.string.prefs_import_data_from_csv)).setOnPreferenceClickListener(this);
-        findPreference(getString(R.string.prefs_time_interval)).setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -62,17 +61,24 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.prefs_current_currency_key))) {
-            (new CurrencyChangeAsyncTask(getActivity())).execute(sharedPreferences.getString(getString(R.string.prefs_source_currency_key), "USD"), sharedPreferences.getString(getString(R.string.prefs_current_currency_key), "USD"));
+            new CurrencyChangeAsyncTask(getActivity()).execute(sharedPreferences.getString(getString(R.string.prefs_source_currency_key), "USD"), sharedPreferences.getString(getString(R.string.prefs_current_currency_key), "USD"));
+        } else if (key.equals(getString(R.string.prefs_time_interval))) {
+            String newValue = sharedPreferences.getString(getString(R.string.prefs_time_interval), getString(R.string.default_time_interval_month));
+            if (newValue.equals(getString(R.string.time_interval_custom))) {
+                Calendar cal = Calendar.getInstance();
+                DatePickerDialog.newInstance(
+                        this,
+                        cal.get(Calendar.YEAR),
+                        cal.get(Calendar.MONTH),
+                        cal.get(Calendar.DAY_OF_MONTH)
+                ).show(getFragmentManager(), "date_interval_picker");
+            }
         }
     }
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference.getKey().equals(getString(R.string.prefs_time_interval))) {
-            Calendar cal = Calendar.getInstance();
-            DatePickerDialog dialog = DatePickerDialog.newInstance(this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-            dialog.show(getFragmentManager(), "datepickerdialog");
-        } else if (preference.getKey().equals(getString(R.string.prefs_export_data_to_csv))) {
+        if (preference.getKey().equals(getString(R.string.prefs_export_data_to_csv))) {
             int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                 new ExportDataToCSVAsyncTask(getActivity()).execute();
@@ -145,5 +151,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
         Log.d(TAG, String.valueOf(year) + " " + String.valueOf(monthOfYear + 1) + " " + String.valueOf(dayOfMonth) + " " + String.valueOf(yearEnd) + " " + String.valueOf(monthOfYearEnd + 1) + " " + String.valueOf(dayOfMonthEnd));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        prefs.edit()
+                .putInt(getString(R.string.custom_interval_start_year), year)
+                .putInt(getString(R.string.custom_interval_start_month), monthOfYear)
+                .putInt(getString(R.string.custom_interval_start_day), dayOfMonth)
+                .putInt(getString(R.string.custom_interval_end_year), yearEnd)
+                .putInt(getString(R.string.custom_interval_end_month), monthOfYearEnd)
+                .putInt(getString(R.string.custom_interval_end_day), dayOfMonthEnd)
+                .commit();
     }
 }

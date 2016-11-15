@@ -83,23 +83,42 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String whereClause;
+        String[] whereParams;
+        long startTime = Utility.getStartTimeForQuery(getContext());
+        long endTime = Utility.getEndTimeForQuery(getContext());
+
         if (mIsShouldShowIncome) {
+            whereClause = IncomesTable.FIELD_DATE + " < ? AND " +
+                    IncomesTable.FIELD_DATE + " >= ?";
+            whereParams = new String[]{
+                    String.valueOf(endTime),
+                    String.valueOf(startTime)};
+
             return new CursorLoader(
                     getContext(),
                     IncomesTable.CONTENT_URI,
                     null,
-                    null,
-                    null,
+                    whereClause,
+                    whereParams,
                     IncomesTable.FIELD_DATE + " ASC"
             );
         }
+
+        whereClause = SpendingsTable.FIELD_CATEGORY_ID + " = ? AND " +
+                SpendingsTable.FIELD_DATE + " < ? AND " +
+                SpendingsTable.FIELD_DATE + " >= ?";
+        whereParams = new String[]{
+                String.valueOf(mCategoryId),
+                String.valueOf(endTime),
+                String.valueOf(startTime)};
 
         return new CursorLoader(
                 getContext(),
                 SpendingsTable.CONTENT_URI,
                 null,
-                SpendingsTable.FIELD_CATEGORY_ID + " = ?",
-                new String[]{String.valueOf(mCategoryId)},
+                whereClause,
+                whereParams,
                 SpendingsTable.FIELD_DATE + " ASC"
         );
     }

@@ -12,6 +12,16 @@
     <string name="permission_explanation_button">Okay</string>
     <string name="permission_needed">Permission denied, please go to options menu to grant access for the app.</string>
     <string name="prefs_time_interval">prefs_time_interval_key</string>
+    <string name="default_time_interval_month">current_month</string>
+    <string name="time_interval_year">current_year</string>
+    <string name="time_interval_day">current_day</string>
+    <string name="time_interval_custom">custom_interval</string>
+    <string name="custom_interval_start_year">interval_start_year</string>
+    <string name="custom_interval_start_month">interval_start_month</string>
+    <string name="custom_interval_start_day">interval_start_day</string>
+    <string name="custom_interval_end_year">interval_end_year</string>
+    <string name="custom_interval_end_month">interval_end_month</string>
+    <string name="custom_interval_end_day">interval_end_day</string>
 
     <string-array name="currencies">
         <item>EUR</item>
@@ -35,5 +45,19 @@
         <item>Swiss franc (CHF)</item>
         <item>Japanese yen (JPY)</item>
         <item>Hungarian forint (HUF)</item>
+    </string-array>
+
+    <string-array name="time_intervals">
+        <item>@string/time_interval_day</item>
+        <item>@string/default_time_interval_month</item>
+        <item>@string/time_interval_year</item>
+        <item>@string/time_interval_custom</item>
+    </string-array>
+
+    <string-array name="time_intervals_names">
+        <item>Current Day</item>
+        <item>Current Month</item>
+        <item>Current Year</item>
+        <item>Custom Interval</item>
     </string-array>
 </resources>
