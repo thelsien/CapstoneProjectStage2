@@ -168,4 +168,28 @@ public class Utility {
         context.getContentResolver().delete(SpendingsTable.CONTENT_URI, null, null);
         context.getContentResolver().delete(IncomesTable.CONTENT_URI, null, null);
     }
+
+    public static float getCategoryValue(Context context, int categoryId) {
+        float sum = 0;
+        Cursor c = context.getContentResolver().query(
+                SpendingsTable.CONTENT_URI,
+                new String[]{SpendingsTable.FIELD_VALUE},
+                SpendingsTable.FIELD_CATEGORY_ID + " = ?",
+                new String[]{String.valueOf(categoryId)},
+                null
+        );
+
+        if (c != null) {
+            c.moveToFirst();
+
+            while (!c.isAfterLast()) {
+                sum += c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE));
+                c.moveToNext();
+            }
+
+            c.close();
+        }
+
+        return sum;
+    }
 }

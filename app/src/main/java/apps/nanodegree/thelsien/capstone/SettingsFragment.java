@@ -22,6 +22,7 @@ import java.util.Calendar;
 import apps.nanodegree.thelsien.capstone.asynctasks.CurrencyChangeAsyncTask;
 import apps.nanodegree.thelsien.capstone.asynctasks.ExportDataToCSVAsyncTask;
 import apps.nanodegree.thelsien.capstone.asynctasks.ImportDataFromCSVAsyncTask;
+import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 
 /**
  * Created by frodo on 2016. 11. 13..

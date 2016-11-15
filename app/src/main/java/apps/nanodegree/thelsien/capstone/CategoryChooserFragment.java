@@ -59,7 +59,7 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_category_chooser, container, false);
 
-        mAdapter = new CategoriesAdapter(null, this, true);
+        mAdapter = new CategoriesAdapter(getContext(), null, this, false);
         RecyclerView listView = (RecyclerView) rootView.findViewById(R.id.lv_list);
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 

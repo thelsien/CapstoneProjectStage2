@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -69,9 +69,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mSpendingFab = (FloatingActionButton) rootView.findViewById(R.id.fab_add_spending);
         mIncomeFab = (FloatingActionButton) rootView.findViewById(R.id.fab_add_income);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lv_list);
-        mCategoryAdapter = new CategoriesAdapter(null, this, false);
+        mCategoryAdapter = new CategoriesAdapter(getContext(), null, this, true);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3)); //TODO magic number to dimension
         mRecyclerView.setAdapter(mCategoryAdapter);
 
         mMainFab.setOnClickListener(this);
