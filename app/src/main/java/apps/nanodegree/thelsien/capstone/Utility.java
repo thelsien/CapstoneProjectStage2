@@ -10,8 +10,10 @@ import android.util.Log;
 import java.util.Calendar;
 import java.util.Vector;
 
+import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTableConfig;
+import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 
 /**
  * Created by frodo on 2016. 11. 08..
@@ -160,5 +162,10 @@ public class Utility {
         Log.d("StartTimeCalculation", "after: " + String.valueOf(cal.getTimeInMillis() / 1000));
 
         return cal.getTimeInMillis() / 1000;
+    }
+
+    public static void deleteSpendingsAndIncomes(Context context) {
+        context.getContentResolver().delete(SpendingsTable.CONTENT_URI, null, null);
+        context.getContentResolver().delete(IncomesTable.CONTENT_URI, null, null);
     }
 }

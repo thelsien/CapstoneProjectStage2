@@ -137,7 +137,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
     public void onEntryClicked(int entryId) {
         Intent intent = new Intent(getContext(), AddEditEntryActivity.class);
         intent.setData(mIsShouldShowIncome ? IncomesTableConfig.getUriForSingleIncome(entryId) : SpendingsTableConfig.getUriForSingleEntry(entryId));
-        intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, true);
+        intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, mIsShouldShowIncome);
 
         startActivity(intent);
     }

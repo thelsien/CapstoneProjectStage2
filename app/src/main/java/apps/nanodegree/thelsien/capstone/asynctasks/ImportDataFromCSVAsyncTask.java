@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import apps.nanodegree.thelsien.capstone.Utility;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
@@ -36,6 +37,8 @@ public class ImportDataFromCSVAsyncTask extends AsyncTask<Uri, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Uri... uris) {
+        Utility.deleteSpendingsAndIncomes(mContext);
+
         String filePath = getFilePath(uris[0]);
         File file = new File(filePath);
 
