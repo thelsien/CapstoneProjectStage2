@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import apps.nanodegree.thelsien.capstone.adapters.CategoryEntryAdapter;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
@@ -50,11 +49,11 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
         View rootView = inflater.inflate(R.layout.fragment_category_details, container, false);
 
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+//        toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lv_list);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
         mAdapter = new CategoryEntryAdapter(getContext(), null, this);
@@ -75,22 +74,26 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
         });
 
         ImageView categoryIconView = (ImageView) rootView.findViewById(R.id.iv_icon);
-        TextView categoryNameView = (TextView) rootView.findViewById(R.id.tv_category_name);
 
-        Cursor c = getContext().getContentResolver().query(
-                MainCategoriesTable.CONTENT_URI,
-                new String[]{MainCategoriesTable.FIELD_ICON_RES, MainCategoriesTable.FIELD_NAME},
-                MainCategoriesTable.FIELD__ID + " = ?",
-                new String[]{String.valueOf(mCategoryId)},
-                null
-        );
-        if (c != null) {
-            c.moveToFirst();
+        if (!mIsShouldShowIncome) {
+            Cursor c = getContext().getContentResolver().query(
+                    MainCategoriesTable.CONTENT_URI,
+                    new String[]{MainCategoriesTable.FIELD_ICON_RES, MainCategoriesTable.FIELD_NAME},
+                    MainCategoriesTable.FIELD__ID + " = ?",
+                    new String[]{String.valueOf(mCategoryId)},
+                    null
+            );
+            if (c != null) {
+                c.moveToFirst();
 
-            categoryIconView.setImageResource(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
-            categoryNameView.setText(c.getString(c.getColumnIndex(MainCategoriesTable.FIELD_NAME)));
+                categoryIconView.setImageResource(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(c.getString(c.getColumnIndex(MainCategoriesTable.FIELD_NAME)));
 
-            c.close();
+                c.close();
+            }
+        } else {
+            categoryIconView.setImageResource(R.drawable.ic_golf_course_black_48dp);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Incomes");
         }
 
         return rootView;

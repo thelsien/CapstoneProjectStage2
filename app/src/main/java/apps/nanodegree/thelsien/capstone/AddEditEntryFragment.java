@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -87,6 +88,7 @@ public class AddEditEntryFragment extends Fragment {
         mTitleTextView = ((TextView) rootView.findViewById(R.id.tv_title));
         mCurrencyTextView = ((TextView) rootView.findViewById(R.id.tv_currency));
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
