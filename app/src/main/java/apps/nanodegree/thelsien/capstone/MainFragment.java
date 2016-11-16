@@ -19,9 +19,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import apps.nanodegree.thelsien.capstone.adapters.CategoriesAdapter;
+import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
+import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 
 /**
  * Created by frodo on 2016. 11. 07..
@@ -144,6 +150,64 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCategoryAdapter.swapCursor(data);
+        refreshValuesInToolbar();
+    }
+
+    private void refreshValuesInToolbar() {
+        long startDate = Utility.getStartTimeForQuery(getContext());
+        long endDate = Utility.getEndTimeForQuery(getContext());
+        float incomesSum = 0;
+        float spendingsSum = 0;
+
+        Cursor c = getContext().getContentResolver().query(
+                IncomesTable.CONTENT_URI,
+                new String[]{IncomesTable.FIELD_VALUE},
+                IncomesTable.FIELD_DATE + " < ? AND " + IncomesTable.FIELD_DATE + " >= ?",
+                new String[]{String.valueOf(endDate), String.valueOf(startDate)},
+                null
+        );
+
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                incomesSum += c.getFloat(c.getColumnIndex(IncomesTable.FIELD_VALUE));
+                c.moveToNext();
+            }
+            c.close();
+        }
+
+        Cursor c2 = getContext().getContentResolver().query(
+                SpendingsTable.CONTENT_URI,
+                new String[]{IncomesTable.FIELD_VALUE},
+                SpendingsTable.FIELD_DATE + " < ? AND " + SpendingsTable.FIELD_DATE + " >= ?",
+                new String[]{String.valueOf(endDate), String.valueOf(startDate)},
+                null
+        );
+
+        if (c2 != null) {
+            c2.moveToFirst();
+            while (!c2.isAfterLast()) {
+                spendingsSum += c2.getFloat(c2.getColumnIndex(SpendingsTable.FIELD_VALUE));
+                c2.moveToNext();
+            }
+            c2.close();
+        }
+
+        TextView incomesTextView = (TextView) getView().findViewById(R.id.tv_incomes);
+        TextView incomesCurrencyView = (TextView) getView().findViewById(R.id.tv_incomes_currency);
+        TextView spendingsTextView = (TextView) getView().findViewById(R.id.tv_spendings);
+        TextView spendingsCurrencyView = (TextView) getView().findViewById(R.id.tv_spendings_currency);
+        TextView balanceTextView = (TextView) getView().findViewById(R.id.tv_balance);
+        TextView balanceCurrencyView = (TextView) getView().findViewById(R.id.tv_balance_currency);
+
+        incomesTextView.setText(NumberFormat.getInstance(Locale.getDefault()).format(incomesSum));
+        spendingsTextView.setText(NumberFormat.getInstance(Locale.getDefault()).format(spendingsSum));
+        balanceTextView.setText(NumberFormat.getInstance(Locale.getDefault()).format(incomesSum - spendingsSum));
+
+        String currentCurrency = Utility.getCurrentCurrency(getContext());
+        incomesCurrencyView.setText(currentCurrency);
+        spendingsCurrencyView.setText(currentCurrency);
+        balanceCurrencyView.setText(currentCurrency);
     }
 
     @Override

@@ -6,4 +6,5 @@
 
     <color name="spendings_color">#F44336</color>
     <color name="income_color">#0D47A1</color>
+    <color name="balance_color">#1B5E20</color>
 </resources>

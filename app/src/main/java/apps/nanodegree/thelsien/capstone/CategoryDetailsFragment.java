@@ -15,10 +15,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import apps.nanodegree.thelsien.capstone.adapters.CategoryEntryAdapter;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
+import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTableConfig;
 
@@ -50,10 +53,9 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lv_list);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-//        getActivity().setTitle(String.valueOf(mCategoryId));
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
         mAdapter = new CategoryEntryAdapter(getContext(), null, this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -71,6 +73,25 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
                 getActivity().startActivity(intent);
             }
         });
+
+        ImageView categoryIconView = (ImageView) rootView.findViewById(R.id.iv_icon);
+        TextView categoryNameView = (TextView) rootView.findViewById(R.id.tv_category_name);
+
+        Cursor c = getContext().getContentResolver().query(
+                MainCategoriesTable.CONTENT_URI,
+                new String[]{MainCategoriesTable.FIELD_ICON_RES, MainCategoriesTable.FIELD_NAME},
+                MainCategoriesTable.FIELD__ID + " = ?",
+                new String[]{String.valueOf(mCategoryId)},
+                null
+        );
+        if (c != null) {
+            c.moveToFirst();
+
+            categoryIconView.setImageResource(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
+            categoryNameView.setText(c.getString(c.getColumnIndex(MainCategoriesTable.FIELD_NAME)));
+
+            c.close();
+        }
 
         return rootView;
     }

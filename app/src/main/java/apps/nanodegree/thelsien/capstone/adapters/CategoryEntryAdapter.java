@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import apps.nanodegree.thelsien.capstone.R;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
@@ -51,7 +52,7 @@ public class CategoryEntryAdapter extends RecyclerView.Adapter<CategoryEntryAdap
         mCursor.moveToPosition(position);
 
         holder.mCurrencyView.setText(mCurrencyString);
-        holder.mValueView.setText(NumberFormat.getInstance().format(mCursor.getFloat(mCursor.getColumnIndex(SpendingsTable.FIELD_VALUE))));
+        holder.mValueView.setText(NumberFormat.getInstance(Locale.getDefault()).format(mCursor.getFloat(mCursor.getColumnIndex(SpendingsTable.FIELD_VALUE))));
         holder.mNoteView.setText(mCursor.getString(mCursor.getColumnIndex(SpendingsTable.FIELD_NOTE)));
 
         Calendar cal = Calendar.getInstance();

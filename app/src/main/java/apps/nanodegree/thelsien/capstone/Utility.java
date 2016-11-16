@@ -200,4 +200,10 @@ public class Utility {
         context.getContentResolver().notifyChange(SpendingsTable.CONTENT_URI, null);
         context.getContentResolver().notifyChange(IncomesTable.CONTENT_URI, null);
     }
+
+    public static String getCurrentCurrency(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return prefs.getString(context.getString(R.string.prefs_current_currency_key), context.getString(R.string.default_currency));
+    }
 }

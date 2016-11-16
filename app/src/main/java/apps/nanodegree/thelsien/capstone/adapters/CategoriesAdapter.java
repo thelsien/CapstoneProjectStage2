@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 
 import apps.nanodegree.thelsien.capstone.R;
 import apps.nanodegree.thelsien.capstone.Utility;
@@ -55,7 +56,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
             float categoryValue = Utility.getCategoryValue(mContext, mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD__ID)));
 
             holder.mValueContainer.setVisibility(View.VISIBLE);
-            holder.mValueView.setText(NumberFormat.getInstance().format(categoryValue));
+            holder.mValueView.setText(NumberFormat.getInstance(Locale.getDefault()).format(categoryValue));
             holder.mCurrencyView.setText(PreferenceManager.getDefaultSharedPreferences(mContext).getString(mContext.getString(R.string.prefs_current_currency_key), mContext.getString(R.string.default_currency)));
         } else {
             holder.mValueContainer.setVisibility(View.GONE);
