@@ -31,17 +31,14 @@
 
         <TextView
             android:id="@+id/tv_currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
-            android:textSize="10sp"
+            style="@style/CurrencyTextView"
             tools:text="HUF"/>
 
         <TextView
             android:id="@+id/tv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             tools:text="14,455"/>
     </LinearLayout>
 

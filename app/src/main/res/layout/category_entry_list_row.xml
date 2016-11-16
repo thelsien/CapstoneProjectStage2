@@ -16,13 +16,7 @@
 
         <TextView
             android:id="@+id/tv_currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingEnd="2dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:paddingStart="2dp"
-            android:textSize="12sp"
+            style="@style/CurrencyTextView"
             tools:text="EUR"/>
 
         <TextView
