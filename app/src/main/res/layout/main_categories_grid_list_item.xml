@@ -5,14 +5,15 @@
               android:layout_height="wrap_content"
               android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:padding="8dp">
+              android:padding="@dimen/padding_8dp">
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="@dimen/main_category_icon_width"
+        android:layout_height="@dimen/main_category_icon_width"
+        android:layout_marginBottom="@dimen/padding_4dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/content_description_category_icon"
         tools:src="@drawable/ic_kitchen_black_48dp"/>
 
     <TextView
@@ -20,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        tools:text="Food category name"/>
+        tools:text="Category name"/>
 
     <LinearLayout
         android:id="@+id/container_values_sum"
@@ -32,14 +33,14 @@
         <TextView
             android:id="@+id/tv_currency"
             style="@style/CurrencyTextView"
-            tools:text="HUF"/>
+            tools:text="@string/default_currency"/>
 
         <TextView
             android:id="@+id/tv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            tools:text="14,455"/>
+            tools:text="555.55"/>
     </LinearLayout>
 
 </LinearLayout>

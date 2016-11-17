@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">MoneyTrackR</string>
 
     <string name="default_currency">USD</string>
@@ -22,6 +22,43 @@
     <string name="custom_interval_end_year">interval_end_year</string>
     <string name="custom_interval_end_month">interval_end_month</string>
     <string name="custom_interval_end_day">interval_end_day</string>
+    <string name="incomes_title">Incomes</string>
+    <string name="spendings_title">Spendings</string>
+    <string name="balance_title">Balance</string>
+    <string name="add_spending_title">Add a spending</string>
+    <string name="add_edit_spendings_edit_text_hint">Spending\'s value</string>
+    <string name="add_edit_note_edit_text_hint">Comment</string>
+    <string name="add_edit_button_choose_category">Choose a category</string>
+    <string name="content_description_category_icon"><xliff:g name="category_name">%1$s</xliff:g> category icon.</string>
+    <string name="edit_spendings_title">Edit spending</string>
+    <string name="add_edit_button_change_category">Change category</string>
+    <string name="add_edit_button_save_to_category">Save to <xliff:g name="category_name">%1$s</xliff:g> category</string>
+    <string name="add_edit_incomes_edit_text_hint">Income\'s value</string>
+    <string name="edit_incomes_title">Edit income</string>
+    <string name="add_income_title">Add an income</string>
+    <string name="add_edit_button_add_income">Add to incomes</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_save">Save</string>
+    <string name="add_edit_save_successful">Saved successfully</string>
+    <string name="add_edit_save_delete_error">Zero or more than 1 row was affected</string>
+    <string name="add_edit_delete_successful">Deleted entry</string>
+    <string name="category_chooser_entry_updated">Entry updated</string>
+    <string name="category_bills">Bills</string>
+    <string name="category_car">Car</string>
+    <string name="category_clothes">Clothes</string>
+    <string name="category_comms">Communications</string>
+    <string name="category_eating_out">Eating out</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_food">Food</string>
+    <string name="category_gifts">Gifts</string>
+    <string name="category_health">Health</string>
+    <string name="category_house">House</string>
+    <string name="category_office">Office</string>
+    <string name="category_pets">Pets</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_taxi">Taxi</string>
+    <string name="category_toiletry">Toiletry</string>
+    <string name="category_transport">Transport</string>
 
     <string-array name="currencies">
         <item>EUR</item>

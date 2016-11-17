@@ -10,27 +10,27 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:theme="@style/ToolbarStyle"
         android:background="@color/colorPrimary"
-        android:elevation="4dp"/>
+        android:elevation="@dimen/toolbar_elevation"
+        app:theme="@style/ToolbarStyle"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingLeft="@dimen/padding_16dp"
+        android:paddingRight="@dimen/padding_16dp">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
-            android:text="Add a spending"
+            android:paddingBottom="@dimen/padding_16dp"
+            android:paddingTop="@dimen/padding_16dp"
+            android:text="@string/add_spending_title"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/add_edit_title_text_size"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,9 +47,8 @@
                     android:id="@+id/et_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:hint="Spending's value"
-                    tools:text="990"/>
+                    android:hint="@string/add_edit_spendings_edit_text_hint"
+                    tools:text="555.55"/>
             </android.support.design.widget.TextInputLayout>
 
             <TextView
@@ -58,23 +57,23 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:paddingTop="10dp"
-                android:text="HUF"
+                android:paddingTop="@dimen/add_edit_currency_padding_top"
                 android:textColor="@android:color/black"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/text_size_16sp"
+                tools:text="@string/default_currency"/>
         </LinearLayout>
 
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp">
+            android:paddingBottom="@dimen/padding_8dp">
 
             <EditText
                 android:id="@+id/et_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Comment"
+                android:hint="@string/add_edit_note_edit_text_hint"
                 tools:text="Bought food in the shop"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -84,8 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@color/colorAccent"
-            android:padding="4dp"
-            android:text="Choose a category"
+            android:padding="@dimen/padding_4dp"
+            android:text="@string/add_edit_button_choose_category"
             android:textColor="@android:color/white"/>
     </LinearLayout>
 

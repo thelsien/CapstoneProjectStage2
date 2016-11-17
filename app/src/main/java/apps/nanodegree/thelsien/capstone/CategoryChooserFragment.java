@@ -66,7 +66,7 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        listView.setLayoutManager(new GridLayoutManager(getContext(), 3)); //TODO replace magic number
+        listView.setLayoutManager(new GridLayoutManager(getContext(), getResources().getInteger(R.integer.main_grid_columns)));
         listView.setAdapter(mAdapter);
 
         return rootView;
@@ -96,9 +96,9 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
             int rowsUpdated = getContext().getContentResolver().update(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false), SpendingsTable.FIELD_ID + " = ?", new String[]{String.valueOf(args.getInt(ARGUMENTS_ENTRY_ID))});
 
             if (rowsUpdated == 1) {
-                Toast.makeText(getContext(), "Entry updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.category_chooser_entry_updated, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), "Zero or more than 1 rows were affected.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.add_edit_save_delete_error, Toast.LENGTH_SHORT).show();
             }
         }
 

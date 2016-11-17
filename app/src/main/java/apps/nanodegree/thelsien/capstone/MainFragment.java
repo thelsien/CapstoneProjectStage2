@@ -37,7 +37,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private static final String[] CATEGORY_COLUMNS = {
             MainCategoriesTable.FIELD__ID,
-            MainCategoriesTable.FIELD_NAME,
+            MainCategoriesTable.FIELD_NAME_RES,
             MainCategoriesTable.FIELD_ICON_RES
     };
     private static final int CATEGORIES_LOADER = 0;
@@ -77,7 +77,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lv_list);
         mCategoryAdapter = new CategoriesAdapter(getContext(), null, this, true);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3)); //TODO magic number to dimension
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), getContext().getResources().getInteger(R.integer.main_grid_columns)));
         mRecyclerView.setAdapter(mCategoryAdapter);
 
         mMainFab.setOnClickListener(this);

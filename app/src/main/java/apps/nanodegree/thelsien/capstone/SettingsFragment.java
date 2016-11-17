@@ -62,7 +62,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.prefs_current_currency_key))) {
-            new CurrencyChangeAsyncTask(getActivity()).execute(sharedPreferences.getString(getString(R.string.prefs_source_currency_key), "USD"), sharedPreferences.getString(getString(R.string.prefs_current_currency_key), "USD"));
+            new CurrencyChangeAsyncTask(getActivity()).execute(
+                    sharedPreferences.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency)),
+                    sharedPreferences.getString(getString(R.string.prefs_current_currency_key), getString(R.string.default_currency))
+            );
         } else if (key.equals(getString(R.string.prefs_time_interval))) {
             String newValue = sharedPreferences.getString(getString(R.string.prefs_time_interval), getString(R.string.default_time_interval_month));
             if (newValue.equals(getString(R.string.time_interval_custom))) {

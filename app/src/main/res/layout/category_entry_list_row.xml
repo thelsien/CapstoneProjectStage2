@@ -6,8 +6,8 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingLeft="@dimen/padding_16dp"
+    android:paddingRight="@dimen/padding_16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,15 +17,15 @@
         <TextView
             android:id="@+id/tv_currency"
             style="@style/CurrencyTextView"
-            tools:text="EUR"/>
+            tools:text="@string/default_currency"/>
 
         <TextView
             android:id="@+id/tv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            tools:text="990"/>
+            android:textSize="@dimen/category_entry_value_text_size"
+            tools:text="555.55"/>
 
         <TextView
             android:id="@+id/tv_date"
@@ -39,8 +39,8 @@
         android:id="@+id/tv_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textSize="12sp"
+        android:layout_marginTop="@dimen/padding_4dp"
+        android:textSize="@dimen/text_size_12sp"
         tools:text="Brought food in shop"/>
 
 </LinearLayout>

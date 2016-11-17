@@ -49,7 +49,6 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
         View rootView = inflater.inflate(R.layout.fragment_category_details, container, false);
 
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-//        toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lv_list);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -78,7 +77,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
         if (!mIsShouldShowIncome) {
             Cursor c = getContext().getContentResolver().query(
                     MainCategoriesTable.CONTENT_URI,
-                    new String[]{MainCategoriesTable.FIELD_ICON_RES, MainCategoriesTable.FIELD_NAME},
+                    new String[]{MainCategoriesTable.FIELD_ICON_RES, MainCategoriesTable.FIELD_NAME_RES},
                     MainCategoriesTable.FIELD__ID + " = ?",
                     new String[]{String.valueOf(mCategoryId)},
                     null
@@ -87,13 +86,15 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
                 c.moveToFirst();
 
                 categoryIconView.setImageResource(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(c.getString(c.getColumnIndex(MainCategoriesTable.FIELD_NAME)));
+                categoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)))));
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES))));
 
                 c.close();
             }
         } else {
             categoryIconView.setImageResource(R.drawable.ic_golf_course_black_48dp);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Incomes");
+            categoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(R.string.incomes_title)));
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.incomes_title));
         }
 
         return rootView;

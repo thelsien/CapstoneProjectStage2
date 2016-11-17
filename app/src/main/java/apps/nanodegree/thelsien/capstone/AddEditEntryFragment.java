@@ -95,16 +95,14 @@ public class AddEditEntryFragment extends Fragment {
 
         mCurrencyTextView.setText(
                 PreferenceManager.getDefaultSharedPreferences(getContext())
-                        .getString
-                                (getString(R.string.prefs_current_currency_key),
-                                        getString(R.string.default_currency)
-                                )
+                        .getString(getString(R.string.prefs_current_currency_key),
+                                getString(R.string.default_currency))
         );
 
         if (!mIsIncome) {
             if (mUri != null) {
                 //When editing a category's entry
-                mTitleTextView.setText("Edit spending entry");
+                mTitleTextView.setText(R.string.edit_spendings_title);
                 mEntryId = Integer.parseInt(mUri.getLastPathSegment());
 
                 Cursor c = getContext().getContentResolver().query(
@@ -120,7 +118,7 @@ public class AddEditEntryFragment extends Fragment {
 
                     mValueEditText.setText(String.valueOf(c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE))));
                     mNoteEditText.setText(c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
-                    mChooseCategoryButton.setText("Change category");
+                    mChooseCategoryButton.setText(R.string.add_edit_button_change_category);
                     mCategoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
 
                     mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
@@ -146,9 +144,11 @@ public class AddEditEntryFragment extends Fragment {
             } else if (mCategoryId != -1) {
                 //when adding a new entry from a category screen.
                 Cursor c = getContext().getContentResolver().query(MainCategoriesTableConfig.getUriCategoryWithId(mCategoryId), null, null, null, null);
-                c.moveToFirst();
-                mChooseCategoryButton.setText("Save to " + c.getString(c.getColumnIndex(MainCategoriesTable.FIELD_NAME)) + " category");
-                c.close();
+                if (c != null) {
+                    c.moveToFirst();
+                    mChooseCategoryButton.setText(String.format(getString(R.string.add_edit_button_save_to_category), getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)))));
+                    c.close();
+                }
 
                 mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -188,11 +188,11 @@ public class AddEditEntryFragment extends Fragment {
                 });
             }
         } else {
-            mValueTextInputLayout.setHint("Income's value");
+            mValueTextInputLayout.setHint(getString(R.string.add_edit_incomes_edit_text_hint));
 
             if (mUri != null) {
                 //when editing an income
-                mTitleTextView.setText("Edit income");
+                mTitleTextView.setText(R.string.edit_incomes_title);
                 Cursor c = getContext().getContentResolver().query(
                         mUri,
                         null,
@@ -213,8 +213,8 @@ public class AddEditEntryFragment extends Fragment {
                 mChooseCategoryButton.setVisibility(View.GONE);
             } else {
                 //when adding new income
-                mTitleTextView.setText("Add an income");
-                mChooseCategoryButton.setText("Add to incomes");
+                mTitleTextView.setText(R.string.add_income_title);
+                mChooseCategoryButton.setText(R.string.add_edit_button_add_income);
                 mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -248,10 +248,10 @@ public class AddEditEntryFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         if (mUri != null) {
-            menu.add(Menu.NONE, 1, 100, "Delete")
+            menu.add(Menu.NONE, 1, 100, R.string.menu_delete)
                     .setIcon(R.drawable.ic_clear_black_48dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            menu.add(Menu.NONE, 2, 200, "Save")
+            menu.add(Menu.NONE, 2, 200, R.string.menu_save)
                     .setIcon(R.drawable.ic_golf_course_black_48dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -275,44 +275,46 @@ public class AddEditEntryFragment extends Fragment {
                         null
                 );
 
-                c.moveToFirst();
+                int rowsUpdated = 0;
+                if (c != null) {
+                    c.moveToFirst();
 
-                int rowsUpdated;
-                if (!mIsIncome) {
-                    SpendingsTableConfig config = new SpendingsTableConfig();
-                    config.id = Integer.valueOf(mUri.getLastPathSegment());
-                    config.value = Float.valueOf(mValueEditText.getText().toString());
-                    config.note = mNoteEditText.getText().toString();
-                    config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
-                    config.categoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
+                    if (!mIsIncome) {
+                        SpendingsTableConfig config = new SpendingsTableConfig();
+                        config.id = Integer.valueOf(mUri.getLastPathSegment());
+                        config.value = Float.valueOf(mValueEditText.getText().toString());
+                        config.note = mNoteEditText.getText().toString();
+                        config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
+                        config.categoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
 
-                    rowsUpdated = getContext().getContentResolver().update(
-                            SpendingsTable.CONTENT_URI,
-                            SpendingsTable.getContentValues(config, true),
-                            SpendingsTable.FIELD_ID + " = ?",
-                            new String[]{mUri.getLastPathSegment()}
-                    );
-                } else {
-                    IncomesTableConfig config = new IncomesTableConfig();
-                    config.id = Integer.valueOf(mUri.getLastPathSegment());
-                    config.value = Float.valueOf(mValueEditText.getText().toString());
-                    config.note = mNoteEditText.getText().toString();
-                    config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
+                        rowsUpdated = getContext().getContentResolver().update(
+                                SpendingsTable.CONTENT_URI,
+                                SpendingsTable.getContentValues(config, true),
+                                SpendingsTable.FIELD_ID + " = ?",
+                                new String[]{mUri.getLastPathSegment()}
+                        );
+                    } else {
+                        IncomesTableConfig config = new IncomesTableConfig();
+                        config.id = Integer.valueOf(mUri.getLastPathSegment());
+                        config.value = Float.valueOf(mValueEditText.getText().toString());
+                        config.note = mNoteEditText.getText().toString();
+                        config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
 
-                    rowsUpdated = getContext().getContentResolver().update(
-                            IncomesTable.CONTENT_URI,
-                            IncomesTable.getContentValues(config, true),
-                            IncomesTable.FIELD_ID + " = ?",
-                            new String[]{mUri.getLastPathSegment()}
-                    );
+                        rowsUpdated = getContext().getContentResolver().update(
+                                IncomesTable.CONTENT_URI,
+                                IncomesTable.getContentValues(config, true),
+                                IncomesTable.FIELD_ID + " = ?",
+                                new String[]{mUri.getLastPathSegment()}
+                        );
+                    }
+
+                    c.close();
                 }
 
-                c.close();
-
                 if (rowsUpdated == 1) {
-                    Toast.makeText(getContext(), "Saved successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.add_edit_save_successful, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "Zero or more than 1 row was affected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.add_edit_save_delete_error, Toast.LENGTH_SHORT).show();
                 }
 
                 Utility.notifyThroughContentResolver(getContext());
@@ -331,9 +333,9 @@ public class AddEditEntryFragment extends Fragment {
         );
 
         if (deletedRows == 1) {
-            Toast.makeText(getContext(), "Deleted entry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.add_edit_delete_successful, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "Zero or more than 1 row was affected.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.add_edit_save_delete_error, Toast.LENGTH_SHORT).show();
         }
 
         Utility.notifyThroughContentResolver(getContext());

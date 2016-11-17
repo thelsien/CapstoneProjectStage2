@@ -5,4 +5,18 @@
     <dimen name="list_percent_size">20sp</dimen>
     <dimen name="list_image_width">32dp</dimen>
     <dimen name="list_category_title_padding">8dp</dimen>
+    <dimen name="main_toolbar_height">150dp</dimen>
+    <dimen name="toolbar_value_text_size">16sp</dimen>
+    <dimen name="padding_8dp">8dp</dimen>
+    <dimen name="padding_16dp">16dp</dimen>
+    <dimen name="main_category_icon_width">32dp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
+    <dimen name="category_entry_value_text_size">18sp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="add_edit_title_text_size">20sp</dimen>
+    <dimen name="add_edit_currency_padding_top">10dp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="category_details_icon_size">50dp</dimen>
+    <dimen name="category_details_toolbar_height">140dp</dimen>
 </resources>

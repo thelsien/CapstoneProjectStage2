@@ -50,8 +50,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     public void onBindViewHolder(CategoriesAdapter.CategoriesAdapterViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
+        final String categoryName = mContext.getString(mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)));
         holder.mIconView.setImageResource(mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
-        holder.mNameView.setText(mCursor.getString(mCursor.getColumnIndex(MainCategoriesTable.FIELD_NAME)));
+        holder.mIconView.setContentDescription(String.format(mContext.getString(R.string.content_description_category_icon), categoryName));
+
+        holder.mNameView.setText(categoryName);
         if (mIsMainFragmentAdapter) {
             float categoryValue = Utility.getCategoryValue(mContext, mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD__ID)));
 

@@ -13,22 +13,23 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="140dp">
+            android:layout_height="@dimen/category_details_toolbar_height">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:expandedTitleTextAppearance="@style/TitleTextAppearance"
                 app:collapsedTitleTextAppearance="@style/TitleTextAppearance"
+                app:expandedTitleTextAppearance="@style/TitleTextAppearance"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
                     android:id="@+id/iv_icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/category_details_icon_size"
+                    android:layout_height="@dimen/category_details_icon_size"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/padding_16dp"
                     android:adjustViewBounds="true"
+                    android:contentDescription="@string/content_description_category_icon"
                     android:tint="@android:color/white"
                     tools:src="@drawable/ic_kitchen_black_48dp"/>
 
@@ -58,7 +59,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/padding_16dp"
         android:src="@drawable/ic_add_black_48dp"
         android:tint="@android:color/white"
         app:fabSize="normal"/>

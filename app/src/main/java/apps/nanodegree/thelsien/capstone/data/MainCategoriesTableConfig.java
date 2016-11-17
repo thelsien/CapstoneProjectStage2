@@ -14,8 +14,8 @@ public class MainCategoriesTableConfig {
     @SimpleSQLColumn(value = "_id", primary = true, autoincrement = true)
     public int _id;
 
-    @SimpleSQLColumn("name")
-    public String name;
+    @SimpleSQLColumn("name_res")
+    public int nameRes;
 
     @SimpleSQLColumn("icon_res")
     public int iconRes;

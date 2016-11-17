@@ -21,11 +21,11 @@ import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 
 public class Utility {
 
-    private static String[] categoryNames = new String[]{
-            "Bills", "Car", "Clothes", "Communications",
-            "Eating out", "Entertainment", "Food", "Gifts",
-            "Health", "House", "Office", "Pets",
-            "Sports", "Taxi", "Toiletry", "Transport"
+    private static int[] categoryNames = new int[]{
+            R.string.category_bills, R.string.category_car, R.string.category_clothes, R.string.category_comms,
+            R.string.category_eating_out, R.string.category_entertainment, R.string.category_food, R.string.category_gifts,
+            R.string.category_health, R.string.category_house, R.string.category_office, R.string.category_pets,
+            R.string.category_sports, R.string.category_taxi, R.string.category_toiletry, R.string.category_transport
     };
 
     private static int[] categoryIconIds = new int[]{
@@ -63,7 +63,7 @@ public class Utility {
 
             for (int i = 0; i < categoryNames.length; i++) {
                 MainCategoriesTableConfig config = new MainCategoriesTableConfig();
-                config.name = categoryNames[i];
+                config.nameRes = categoryNames[i];
                 config.iconRes = categoryIconIds[i];
                 cVVector.add(MainCategoriesTable.getContentValues(config, false));
             }
