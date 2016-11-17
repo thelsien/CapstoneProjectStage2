@@ -59,6 +59,10 @@
     <string name="category_taxi">Taxi</string>
     <string name="category_toiletry">Toiletry</string>
     <string name="category_transport">Transport</string>
+    <string name="fab_spending">Add a new spending entry</string>
+    <string name="fab_income">Add a new income entry</string>
+    <string name="fab_open">Open new entry menu</string>
+    <string name="fab_close">Close new entry menu</string>
 
     <string-array name="currencies">
         <item>EUR</item>

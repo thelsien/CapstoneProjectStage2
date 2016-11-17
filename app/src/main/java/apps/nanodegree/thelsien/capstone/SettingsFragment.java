@@ -85,66 +85,53 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public boolean onPreferenceClick(Preference preference) {
         if (preference.getKey().equals(getString(R.string.prefs_export_data_to_csv))) {
-            int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                new ExportDataToCSVAsyncTask(getActivity()).execute();
-            } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, WRITE_STORAGE_REQUEST_CODE);
 
-                    AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.permission_explanation_dialog_title)
-                            .setMessage(R.string.permission_explanation_message)
-                            .setPositiveButton(R.string.permission_explanation_button, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ActivityCompat.requestPermissions(getActivity(),
-                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                            WRITE_STORAGE_REQUEST_CODE);
-                                }
-                            })
-                            .create();
-                    dialog.show();
-                } else {
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            WRITE_STORAGE_REQUEST_CODE);
-                }
-            }
             return true;
         } else if (preference.getKey().equals(getString(R.string.prefs_import_data_from_csv))) {
-            int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*");
-                startActivityForResult(intent, FILE_CHOOSER_REQUEST_CODE);
-            } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, READ_STORAGE_REQUEST_CODE);
 
-                    AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.permission_explanation_dialog_title)
-                            .setMessage(R.string.permission_explanation_message)
-                            .setPositiveButton(R.string.permission_explanation_button, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ActivityCompat.requestPermissions(getActivity(),
-                                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                            READ_STORAGE_REQUEST_CODE);
-                                }
-                            })
-                            .create();
-                    dialog.show();
-                } else {
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            READ_STORAGE_REQUEST_CODE);
-                }
-            }
             return true;
         }
 
         return false;
+    }
+
+    private void requestPermission(final String permission, final int requestCode) {
+        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), permission);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case WRITE_STORAGE_REQUEST_CODE:
+                    new ExportDataToCSVAsyncTask(getActivity()).execute();
+                    break;
+                case READ_STORAGE_REQUEST_CODE:
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("file/*");
+                    startActivityForResult(intent, FILE_CHOOSER_REQUEST_CODE);
+                    break;
+            }
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission)) {
+
+                AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.permission_explanation_dialog_title)
+                        .setMessage(R.string.permission_explanation_message)
+                        .setPositiveButton(R.string.permission_explanation_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(getActivity(),
+                                        new String[]{permission},
+                                        requestCode);
+                            }
+                        })
+                        .create();
+                dialog.show();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{permission},
+                        requestCode);
+            }
+        }
     }
 
     @Override

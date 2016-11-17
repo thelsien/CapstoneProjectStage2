@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Vector;
@@ -87,8 +86,6 @@ public class Utility {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String timeIntervalKey = prefs.getString(context.getString(R.string.prefs_time_interval), context.getString(R.string.default_time_interval_month));
 
-        Log.d("StartTimeCalculation", "before: " + String.valueOf(cal.getTimeInMillis() / 1000));
-
         if (timeIntervalKey.equals(context.getString(R.string.time_interval_day))) {
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
@@ -118,8 +115,6 @@ public class Utility {
             cal.set(Calendar.SECOND, 0);
         }
 
-        Log.d("StartTimeCalculation", "after: " + String.valueOf(cal.getTimeInMillis() / 1000));
-
         return cal.getTimeInMillis() / 1000;
     }
 
@@ -127,8 +122,6 @@ public class Utility {
         Calendar cal = Calendar.getInstance();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String timeIntervalKey = prefs.getString(context.getString(R.string.prefs_time_interval), context.getString(R.string.default_time_interval_month));
-
-        Log.d("StartTimeCalculation", "before: " + String.valueOf(cal.getTimeInMillis() / 1000));
 
         if (timeIntervalKey.equals(context.getString(R.string.time_interval_day))) {
             cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -158,8 +151,6 @@ public class Utility {
             cal.set(Calendar.MINUTE, 59);
             cal.set(Calendar.SECOND, 59);
         }
-
-        Log.d("StartTimeCalculation", "after: " + String.valueOf(cal.getTimeInMillis() / 1000));
 
         return cal.getTimeInMillis() / 1000;
     }
@@ -205,5 +196,53 @@ public class Utility {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         return prefs.getString(context.getString(R.string.prefs_current_currency_key), context.getString(R.string.default_currency));
+    }
+
+    public static float getIncomesSum(Context context) {
+        long startDate = getStartTimeForQuery(context);
+        long endDate = getEndTimeForQuery(context);
+        float incomesSum = 0;
+
+        Cursor c = context.getContentResolver().query(
+                IncomesTable.CONTENT_URI,
+                new String[]{IncomesTable.FIELD_VALUE},
+                IncomesTable.FIELD_DATE + " < ? AND " + IncomesTable.FIELD_DATE + " >= ?",
+                new String[]{String.valueOf(endDate), String.valueOf(startDate)},
+                null
+        );
+
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                incomesSum += c.getFloat(c.getColumnIndex(IncomesTable.FIELD_VALUE));
+                c.moveToNext();
+            }
+            c.close();
+        }
+        return incomesSum;
+    }
+
+    public static float getSpendingsSum(Context context) {
+        long startDate = getStartTimeForQuery(context);
+        long endDate = getEndTimeForQuery(context);
+        float spendingsSum = 0;
+
+        Cursor c2 = context.getContentResolver().query(
+                SpendingsTable.CONTENT_URI,
+                new String[]{IncomesTable.FIELD_VALUE},
+                SpendingsTable.FIELD_DATE + " < ? AND " + SpendingsTable.FIELD_DATE + " >= ?",
+                new String[]{String.valueOf(endDate), String.valueOf(startDate)},
+                null
+        );
+
+        if (c2 != null) {
+            c2.moveToFirst();
+            while (!c2.isAfterLast()) {
+                spendingsSum += c2.getFloat(c2.getColumnIndex(SpendingsTable.FIELD_VALUE));
+                c2.moveToNext();
+            }
+            c2.close();
+        }
+        return spendingsSum;
     }
 }

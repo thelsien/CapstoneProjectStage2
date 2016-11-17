@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import apps.nanodegree.thelsien.capstone.asynctasks.ExportDataToCSVAsyncTask;
+import apps.nanodegree.thelsien.capstone.asynctasks.ImportDataFromCSVAsyncTask;
 
 import static apps.nanodegree.thelsien.capstone.SettingsFragment.FILE_CHOOSER_REQUEST_CODE;
 import static apps.nanodegree.thelsien.capstone.SettingsFragment.READ_STORAGE_REQUEST_CODE;
@@ -57,6 +58,13 @@ public class SettingsActivity extends Activity {
                 }
                 break;
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FILE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            new ImportDataFromCSVAsyncTask(this).execute(data.getData());
         }
     }
 }

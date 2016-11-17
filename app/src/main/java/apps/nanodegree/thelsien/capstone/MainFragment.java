@@ -25,9 +25,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import apps.nanodegree.thelsien.capstone.adapters.CategoriesAdapter;
-import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
-import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 
 /**
  * Created by frodo on 2016. 11. 07..
@@ -71,6 +69,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mFabClose = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
         mRotateForward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
         mRotateBackward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
+
         mMainFab = (FloatingActionButton) rootView.findViewById(R.id.fab_open_close);
         mSpendingFab = (FloatingActionButton) rootView.findViewById(R.id.fab_add_spending);
         mIncomeFab = (FloatingActionButton) rootView.findViewById(R.id.fab_add_income);
@@ -79,6 +78,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), getContext().getResources().getInteger(R.integer.main_grid_columns)));
         mRecyclerView.setAdapter(mCategoryAdapter);
+
+        mMainFab.setContentDescription(getString(R.string.fab_open));
+        mSpendingFab.setContentDescription(getString(R.string.fab_spending));
+        mIncomeFab.setContentDescription(getString(R.string.fab_income));
 
         mMainFab.setOnClickListener(this);
         mSpendingFab.setOnClickListener(this);
@@ -89,6 +92,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public void animateFABOpeningClosing() {
         if (isFabOpen) {
+            mMainFab.setContentDescription(getString(R.string.fab_open));
             mMainFab.startAnimation(mRotateBackward);
             mSpendingFab.startAnimation(mFabClose);
             mIncomeFab.startAnimation(mFabClose);
@@ -96,6 +100,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             mIncomeFab.setClickable(false);
             isFabOpen = false;
         } else {
+            mMainFab.setContentDescription(getString(R.string.fab_close));
             mMainFab.startAnimation(mRotateForward);
             mSpendingFab.startAnimation(mFabOpen);
             mIncomeFab.startAnimation(mFabOpen);
@@ -156,42 +161,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private void refreshValuesInToolbar() {
         long startDate = Utility.getStartTimeForQuery(getContext());
         long endDate = Utility.getEndTimeForQuery(getContext());
-        float incomesSum = 0;
-        float spendingsSum = 0;
 
-        Cursor c = getContext().getContentResolver().query(
-                IncomesTable.CONTENT_URI,
-                new String[]{IncomesTable.FIELD_VALUE},
-                IncomesTable.FIELD_DATE + " < ? AND " + IncomesTable.FIELD_DATE + " >= ?",
-                new String[]{String.valueOf(endDate), String.valueOf(startDate)},
-                null
-        );
-
-        if (c != null) {
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                incomesSum += c.getFloat(c.getColumnIndex(IncomesTable.FIELD_VALUE));
-                c.moveToNext();
-            }
-            c.close();
-        }
-
-        Cursor c2 = getContext().getContentResolver().query(
-                SpendingsTable.CONTENT_URI,
-                new String[]{IncomesTable.FIELD_VALUE},
-                SpendingsTable.FIELD_DATE + " < ? AND " + SpendingsTable.FIELD_DATE + " >= ?",
-                new String[]{String.valueOf(endDate), String.valueOf(startDate)},
-                null
-        );
-
-        if (c2 != null) {
-            c2.moveToFirst();
-            while (!c2.isAfterLast()) {
-                spendingsSum += c2.getFloat(c2.getColumnIndex(SpendingsTable.FIELD_VALUE));
-                c2.moveToNext();
-            }
-            c2.close();
-        }
+        float incomesSum = Utility.getIncomesSum(getContext());
+        float spendingsSum = Utility.getSpendingsSum(getContext());
 
         TextView incomesTextView = (TextView) getView().findViewById(R.id.tv_incomes);
         TextView incomesCurrencyView = (TextView) getView().findViewById(R.id.tv_incomes_currency);
