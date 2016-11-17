@@ -118,7 +118,7 @@ public class AddEditEntryFragment extends Fragment {
                 if (c != null) {
                     c.moveToFirst();
 
-                    mValueEditText.setText(String.valueOf(c.getInt(c.getColumnIndex(SpendingsTable.FIELD_VALUE))));
+                    mValueEditText.setText(String.valueOf(c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE))));
                     mNoteEditText.setText(c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
                     mChooseCategoryButton.setText("Change category");
                     mCategoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
