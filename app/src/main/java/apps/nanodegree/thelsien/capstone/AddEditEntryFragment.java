@@ -1,5 +1,6 @@
 package apps.nanodegree.thelsien.capstone;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -102,145 +103,163 @@ public class AddEditEntryFragment extends Fragment {
         if (!mIsIncome) {
             if (mUri != null) {
                 //When editing a category's entry
-                mTitleTextView.setText(R.string.edit_spendings_title);
-                mEntryId = Integer.parseInt(mUri.getLastPathSegment());
-
-                Cursor c = getContext().getContentResolver().query(
-                        mUri,
-                        null,
-                        null,
-                        null,
-                        null
-                );
-
-                if (c != null) {
-                    c.moveToFirst();
-
-                    mValueEditText.setText(String.valueOf(c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE))));
-                    mNoteEditText.setText(c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
-                    mChooseCategoryButton.setText(R.string.add_edit_button_change_category);
-                    mCategoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
-
-                    mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            getActivity().getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-                                    .addToBackStack("other_fragment")
-                                    .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(
-                                            mCategoryId,
-                                            mEntryId,
-                                            Float.valueOf(mValueEditText.getText().toString().trim()),
-                                            mNoteEditText.getText().toString().trim())
-                                    )
-                                    .commit();
-                        }
-                    });
-
-                    c.close();
-                }
-
-
+                setupEditCategoryEntry();
             } else if (mCategoryId != -1) {
                 //when adding a new entry from a category screen.
-                Cursor c = getContext().getContentResolver().query(MainCategoriesTableConfig.getUriCategoryWithId(mCategoryId), null, null, null, null);
-                if (c != null) {
-                    c.moveToFirst();
-                    mChooseCategoryButton.setText(String.format(getString(R.string.add_edit_button_save_to_category), getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)))));
-                    c.close();
-                }
-
-                mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext(), String.valueOf(mCategoryId), Toast.LENGTH_SHORT).show();
-
-                        Calendar cal = Calendar.getInstance();
-                        SpendingsTableConfig config = new SpendingsTableConfig();
-
-                        config.categoryId = mCategoryId;
-                        config.value = Float.valueOf(mValueEditText.getText().toString().trim());
-                        config.note = mNoteEditText.getText().toString().trim();
-                        config.date = cal.getTimeInMillis() / 1000;
-
-                        Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false));
-                        if (uri != null) {
-                            Log.d(TAG, "Success");
-
-                            Utility.notifyThroughContentResolver(getContext());
-
-                            getActivity().finish();
-                        } else {
-                            Log.d(TAG, "Error, uri is null after insert");
-                        }
-                    }
-                });
+                setupAddNewEntryToSpecificCategory();
             } else { //when adding a new element from the main screen
-                mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-                                .addToBackStack("other_fragment")
-                                .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(-1, mEntryId, Float.valueOf(mValueEditText.getText().toString().trim()), mNoteEditText.getText().toString().trim()))
-                                .commit();
-                    }
-                });
+                setupAddNewEntry();
             }
         } else {
             mValueTextInputLayout.setHint(getString(R.string.add_edit_incomes_edit_text_hint));
 
             if (mUri != null) {
                 //when editing an income
-                mTitleTextView.setText(R.string.edit_incomes_title);
-                Cursor c = getContext().getContentResolver().query(
-                        mUri,
-                        null,
-                        null,
-                        null,
-                        null
-                );
-
-                if (c != null) {
-                    c.moveToFirst();
-
-                    mValueEditText.setText(String.valueOf(c.getFloat(c.getColumnIndex(IncomesTable.FIELD_VALUE))));
-                    mNoteEditText.setText(c.getString(c.getColumnIndex(IncomesTable.FIELD_NOTE)));
-
-                    c.close();
-                }
-
-                mChooseCategoryButton.setVisibility(View.GONE);
+                setupEditingIncomeEntry();
             } else {
                 //when adding new income
-                mTitleTextView.setText(R.string.add_income_title);
-                mChooseCategoryButton.setText(R.string.add_edit_button_add_income);
-                mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Calendar cal = Calendar.getInstance();
-                        IncomesTableConfig config = new IncomesTableConfig();
-
-                        config.value = Float.valueOf(mValueEditText.getText().toString().trim());
-                        config.note = mNoteEditText.getText().toString().trim();
-                        config.date = cal.getTimeInMillis() / 1000;
-
-                        Uri uri = getContext().getContentResolver().insert(IncomesTable.CONTENT_URI, IncomesTable.getContentValues(config, false));
-                        if (uri != null) {
-                            Log.d(TAG, "Success");
-
-                            Utility.notifyThroughContentResolver(getContext());
-
-                            getActivity().finish();
-                        } else {
-                            Log.d(TAG, "Error, uri is null after insert");
-                        }
-                    }
-                });
+                setupAddNewIncomeEntry();
             }
         }
 
         return rootView;
+    }
+
+    private void setupAddNewIncomeEntry() {
+        mTitleTextView.setText(R.string.add_income_title);
+        mChooseCategoryButton.setText(R.string.add_edit_button_add_income);
+        mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                IncomesTableConfig config = new IncomesTableConfig();
+
+                config.value = Float.valueOf(mValueEditText.getText().toString().trim());
+                config.note = mNoteEditText.getText().toString().trim();
+                config.date = cal.getTimeInMillis() / 1000;
+
+                Uri uri = getContext().getContentResolver().insert(IncomesTable.CONTENT_URI, IncomesTable.getContentValues(config, false));
+                if (uri != null) {
+                    Log.d(TAG, "Success");
+
+                    Utility.notifyThroughContentResolver(getContext());
+
+                    getActivity().finish();
+                } else {
+                    Log.d(TAG, "Error, uri is null after insert");
+                }
+            }
+        });
+    }
+
+    private void setupEditingIncomeEntry() {
+        mTitleTextView.setText(R.string.edit_incomes_title);
+        Cursor c = getContext().getContentResolver().query(
+                mUri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if (c != null) {
+            c.moveToFirst();
+
+            mValueEditText.setText(String.valueOf(c.getFloat(c.getColumnIndex(IncomesTable.FIELD_VALUE))));
+            mNoteEditText.setText(c.getString(c.getColumnIndex(IncomesTable.FIELD_NOTE)));
+
+            c.close();
+        }
+
+        mChooseCategoryButton.setVisibility(View.GONE);
+    }
+
+    private void setupAddNewEntry() {
+        mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                        .addToBackStack("other_fragment")
+                        .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(-1, mEntryId, Float.valueOf(mValueEditText.getText().toString().trim()), mNoteEditText.getText().toString().trim()))
+                        .commit();
+            }
+        });
+    }
+
+    private void setupAddNewEntryToSpecificCategory() {
+        Cursor c = getContext().getContentResolver().query(MainCategoriesTableConfig.getUriCategoryWithId(mCategoryId), null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+            mChooseCategoryButton.setText(String.format(getString(R.string.add_edit_button_save_to_category), getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)))));
+            c.close();
+        }
+
+        mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), String.valueOf(mCategoryId), Toast.LENGTH_SHORT).show();
+
+                Calendar cal = Calendar.getInstance();
+                SpendingsTableConfig config = new SpendingsTableConfig();
+
+                config.categoryId = mCategoryId;
+                config.value = Float.valueOf(mValueEditText.getText().toString().trim());
+                config.note = mNoteEditText.getText().toString().trim();
+                config.date = cal.getTimeInMillis() / 1000;
+
+                Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false));
+                if (uri != null) {
+                    Log.d(TAG, "Success");
+
+                    Utility.notifyThroughContentResolver(getContext());
+
+                    getActivity().finish();
+                } else {
+                    Log.d(TAG, "Error, uri is null after insert");
+                }
+            }
+        });
+    }
+
+    private void setupEditCategoryEntry() {
+        mTitleTextView.setText(R.string.edit_spendings_title);
+        mEntryId = Integer.parseInt(mUri.getLastPathSegment());
+
+        Cursor c = getContext().getContentResolver().query(
+                mUri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if (c != null) {
+            c.moveToFirst();
+
+            mValueEditText.setText(String.valueOf(c.getFloat(c.getColumnIndex(SpendingsTable.FIELD_VALUE))));
+            mNoteEditText.setText(c.getString(c.getColumnIndex(SpendingsTable.FIELD_NOTE)));
+            mChooseCategoryButton.setText(R.string.add_edit_button_change_category);
+            mCategoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
+
+            mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                            .addToBackStack("other_fragment")
+                            .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(
+                                    mCategoryId,
+                                    mEntryId,
+                                    Float.valueOf(mValueEditText.getText().toString().trim()),
+                                    mNoteEditText.getText().toString().trim())
+                            )
+                            .commit();
+                }
+            });
+
+            c.close();
+        }
     }
 
     @Override
@@ -267,62 +286,71 @@ public class AddEditEntryFragment extends Fragment {
                 );
                 break;
             case 2:
-                Cursor c = getContext().getContentResolver().query(
-                        mUri,
-                        null,
-                        null,
-                        null,
-                        null
+                saveEntryToDB(
+                        mIsIncome ? IncomesTable.CONTENT_URI : SpendingsTable.CONTENT_URI,
+                        mIsIncome ? IncomesTable.FIELD_ID : SpendingsTable.FIELD_ID
                 );
-
-                int rowsUpdated = 0;
-                if (c != null) {
-                    c.moveToFirst();
-
-                    if (!mIsIncome) {
-                        SpendingsTableConfig config = new SpendingsTableConfig();
-                        config.id = Integer.valueOf(mUri.getLastPathSegment());
-                        config.value = Float.valueOf(mValueEditText.getText().toString());
-                        config.note = mNoteEditText.getText().toString();
-                        config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
-                        config.categoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
-
-                        rowsUpdated = getContext().getContentResolver().update(
-                                SpendingsTable.CONTENT_URI,
-                                SpendingsTable.getContentValues(config, true),
-                                SpendingsTable.FIELD_ID + " = ?",
-                                new String[]{mUri.getLastPathSegment()}
-                        );
-                    } else {
-                        IncomesTableConfig config = new IncomesTableConfig();
-                        config.id = Integer.valueOf(mUri.getLastPathSegment());
-                        config.value = Float.valueOf(mValueEditText.getText().toString());
-                        config.note = mNoteEditText.getText().toString();
-                        config.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
-
-                        rowsUpdated = getContext().getContentResolver().update(
-                                IncomesTable.CONTENT_URI,
-                                IncomesTable.getContentValues(config, true),
-                                IncomesTable.FIELD_ID + " = ?",
-                                new String[]{mUri.getLastPathSegment()}
-                        );
-                    }
-
-                    c.close();
-                }
-
-                if (rowsUpdated == 1) {
-                    Toast.makeText(getContext(), R.string.add_edit_save_successful, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), R.string.add_edit_save_delete_error, Toast.LENGTH_SHORT).show();
-                }
-
-                Utility.notifyThroughContentResolver(getContext());
-
-                getActivity().finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveEntryToDB(Uri uri, String idColumn) {
+        Cursor c = getContext().getContentResolver().query(
+                mUri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        int rowsUpdated;
+        SpendingsTableConfig spendingsConfig = new SpendingsTableConfig();
+        IncomesTableConfig incomesConfig = new IncomesTableConfig();
+
+        if (c != null) {
+            c.moveToFirst();
+
+            if (!mIsIncome) {
+                spendingsConfig.id = Integer.valueOf(mUri.getLastPathSegment());
+                spendingsConfig.value = Float.valueOf(mValueEditText.getText().toString());
+                spendingsConfig.note = mNoteEditText.getText().toString();
+                spendingsConfig.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
+                spendingsConfig.categoryId = c.getInt(c.getColumnIndex(SpendingsTable.FIELD_CATEGORY_ID));
+            } else {
+                incomesConfig.id = Integer.valueOf(mUri.getLastPathSegment());
+                incomesConfig.value = Float.valueOf(mValueEditText.getText().toString());
+                incomesConfig.note = mNoteEditText.getText().toString();
+                incomesConfig.date = c.getLong(c.getColumnIndex(SpendingsTable.FIELD_DATE));
+            }
+
+            c.close();
+        }
+
+        ContentValues contentValues;
+
+        if (mIsIncome) {
+            contentValues = IncomesTable.getContentValues(incomesConfig, true);
+        } else {
+            contentValues = SpendingsTable.getContentValues(spendingsConfig, true);
+        }
+
+        rowsUpdated = getContext().getContentResolver().update(
+                uri,
+                contentValues,
+                idColumn + " = ?",
+                new String[]{mUri.getLastPathSegment()}
+        );
+
+        if (rowsUpdated == 1) {
+            Toast.makeText(getContext(), R.string.add_edit_save_successful, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), R.string.add_edit_save_delete_error, Toast.LENGTH_SHORT).show();
+        }
+
+        Utility.notifyThroughContentResolver(getContext());
+
+        getActivity().finish();
     }
 
     private void deleteEntryFromDB(Uri contentUri, String columnId) {

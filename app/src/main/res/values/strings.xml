@@ -63,6 +63,7 @@
     <string name="fab_income">Add a new income entry</string>
     <string name="fab_open">Open new entry menu</string>
     <string name="fab_close">Close new entry menu</string>
+    <string name="empty_list">This list is currently empty.</string>
 
     <string-array name="currencies">
         <item>EUR</item>

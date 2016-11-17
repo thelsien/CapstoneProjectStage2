@@ -74,8 +74,6 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onCategoryClicked(int categoryId) {
-        Toast.makeText(getContext(), String.valueOf(categoryId), Toast.LENGTH_SHORT).show();
-
         Calendar cal = Calendar.getInstance();
         SpendingsTableConfig config = new SpendingsTableConfig();
         Bundle args = getArguments();

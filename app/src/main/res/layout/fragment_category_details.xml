@@ -48,7 +48,15 @@
             android:id="@+id/lv_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <TextView
+            android:id="@+id/tv_empty_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/empty_list"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

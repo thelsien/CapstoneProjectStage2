@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import apps.nanodegree.thelsien.capstone.adapters.CategoryEntryAdapter;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
@@ -38,6 +39,8 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
     private int mCategoryId;
     private RecyclerView mRecyclerView;
     private CategoryEntryAdapter mAdapter;
+    private TextView mEmptyView;
+    private ImageView mCategoryIconView;
 
     @Nullable
     @Override
@@ -50,10 +53,10 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
 
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lv_list);
+        mEmptyView = (TextView) rootView.findViewById(R.id.tv_empty_list);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         mAdapter = new CategoryEntryAdapter(getContext(), null, this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -72,32 +75,36 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
             }
         });
 
-        ImageView categoryIconView = (ImageView) rootView.findViewById(R.id.iv_icon);
+        mCategoryIconView = (ImageView) rootView.findViewById(R.id.iv_icon);
 
         if (!mIsShouldShowIncome) {
-            Cursor c = getContext().getContentResolver().query(
-                    MainCategoriesTable.CONTENT_URI,
-                    new String[]{MainCategoriesTable.FIELD_ICON_RES, MainCategoriesTable.FIELD_NAME_RES},
-                    MainCategoriesTable.FIELD__ID + " = ?",
-                    new String[]{String.valueOf(mCategoryId)},
-                    null
-            );
-            if (c != null) {
-                c.moveToFirst();
-
-                categoryIconView.setImageResource(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
-                categoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)))));
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES))));
-
-                c.close();
-            }
+            getIconAndNameForSpendingCategory();
         } else {
-            categoryIconView.setImageResource(R.drawable.ic_golf_course_black_48dp);
-            categoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(R.string.incomes_title)));
+            mCategoryIconView.setImageResource(R.drawable.ic_golf_course_black_48dp);
+            mCategoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(R.string.incomes_title)));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.incomes_title));
         }
 
         return rootView;
+    }
+
+    private void getIconAndNameForSpendingCategory() {
+        Cursor c = getContext().getContentResolver().query(
+                MainCategoriesTable.CONTENT_URI,
+                new String[]{MainCategoriesTable.FIELD_ICON_RES, MainCategoriesTable.FIELD_NAME_RES},
+                MainCategoriesTable.FIELD__ID + " = ?",
+                new String[]{String.valueOf(mCategoryId)},
+                null
+        );
+        if (c != null) {
+            c.moveToFirst();
+
+            mCategoryIconView.setImageResource(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
+            mCategoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)))));
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES))));
+
+            c.close();
+        }
     }
 
     @Override
@@ -151,11 +158,20 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+        if (data.getCount() > 0) {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
+        } else {
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
     }
 
     @Override
