@@ -64,6 +64,10 @@
     <string name="fab_open">Open new entry menu</string>
     <string name="fab_close">Close new entry menu</string>
     <string name="empty_list">This list is currently empty.</string>
+    <string name="loading_dialog_title">Loading</string>
+    <string name="loading_dialog_message">Please wait...</string>
+    <string name="message_currency_changed_successfuly">Currency changed successfully</string>
+    <string name="message_currency_change_error">Currency not changed, please try again later</string>
 
     <string-array name="currencies">
         <item>EUR</item>

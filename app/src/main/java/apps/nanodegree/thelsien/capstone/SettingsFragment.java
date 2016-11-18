@@ -3,6 +3,7 @@ package apps.nanodegree.thelsien.capstone;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 
@@ -27,7 +29,7 @@ import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 /**
  * Created by frodo on 2016. 11. 13..
  */
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, ActivityCompat.OnRequestPermissionsResultCallback, DatePickerDialog.OnDateSetListener {
+public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, ActivityCompat.OnRequestPermissionsResultCallback, DatePickerDialog.OnDateSetListener, CurrencyChangeAsyncTask.OnCurrenyChangeListener {
 
     public static final int FILE_CHOOSER_REQUEST_CODE = 1000;
 
@@ -36,9 +38,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
 
+    private ProgressDialog mProgressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setTitle(R.string.loading_dialog_title);
+        mProgressDialog.setMessage(getString(R.string.loading_dialog_message));
+        mProgressDialog.setCancelable(false);
 
         addPreferencesFromResource(R.xml.main_preferences);
         findPreference(getString(R.string.prefs_export_data_to_csv)).setOnPreferenceClickListener(this);
@@ -62,10 +71,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.prefs_current_currency_key))) {
-            new CurrencyChangeAsyncTask(getActivity()).execute(
+            new CurrencyChangeAsyncTask(getActivity(), this).execute(
                     sharedPreferences.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency)),
                     sharedPreferences.getString(getString(R.string.prefs_current_currency_key), getString(R.string.default_currency))
             );
+            mProgressDialog.show();
         } else if (key.equals(getString(R.string.prefs_time_interval))) {
             String newValue = sharedPreferences.getString(getString(R.string.prefs_time_interval), getString(R.string.default_time_interval_month));
             if (newValue.equals(getString(R.string.time_interval_custom))) {
@@ -103,6 +113,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             switch (requestCode) {
                 case WRITE_STORAGE_REQUEST_CODE:
                     new ExportDataToCSVAsyncTask(getActivity()).execute();
+                    mProgressDialog.show();
                     break;
                 case READ_STORAGE_REQUEST_CODE:
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -138,6 +149,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             new ImportDataFromCSVAsyncTask(getActivity()).execute(data.getData());
+            mProgressDialog.show();
         }
     }
 
@@ -155,5 +167,26 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 .commit();
 
         getActivity().getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
+    }
+
+    @Override
+    public void onCurrencyChanged(boolean isSuccessful, String newCurrency) {
+        mProgressDialog.dismiss();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (isSuccessful) {
+            prefs.edit()
+                    .putString(getString(R.string.prefs_source_currency_key), newCurrency)
+                    .commit();
+        } else {
+            String sourceCurrency = prefs.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency));
+            prefs.edit()
+                    .putString(getString(R.string.prefs_current_currency_key), sourceCurrency)
+                    .commit();
+        }
+
+        int messageResId = isSuccessful ? R.string.message_currency_changed_successfuly : R.string.message_currency_change_error;
+
+        Toast.makeText(getActivity(), messageResId, Toast.LENGTH_SHORT).show();
     }
 }

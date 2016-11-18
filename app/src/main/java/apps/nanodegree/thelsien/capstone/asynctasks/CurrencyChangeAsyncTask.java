@@ -1,10 +1,8 @@
 package apps.nanodegree.thelsien.capstone.asynctasks;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -12,7 +10,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import apps.nanodegree.thelsien.capstone.R;
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
@@ -32,17 +29,21 @@ public class CurrencyChangeAsyncTask extends AsyncTask<String, Void, Boolean> {
     private static final String CURRENCY_CHANGE_RATE_QUERY_URL_BASE = "http://api.fixer.io/latest?";
 
     private Context mContext;
+    private OnCurrenyChangeListener mListener;
 
-    public CurrencyChangeAsyncTask(Context context) {
+    private String mTargetCurrency;
+
+    public CurrencyChangeAsyncTask(Context context, OnCurrenyChangeListener listener) {
         super();
         mContext = context;
+        mListener = listener;
     }
 
     @Override
     protected Boolean doInBackground(String... params) {
         String sourceCurrency = params[0];
-        String targetCurrency = params[1];
-        String url = CURRENCY_CHANGE_RATE_QUERY_URL_BASE + "base=" + sourceCurrency + "&symbols=" + targetCurrency;
+        mTargetCurrency = params[1];
+        String url = CURRENCY_CHANGE_RATE_QUERY_URL_BASE + "base=" + sourceCurrency + "&symbols=" + mTargetCurrency;
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -56,7 +57,7 @@ public class CurrencyChangeAsyncTask extends AsyncTask<String, Void, Boolean> {
             JSONObject responseData = new JSONObject(jsonString);
             Log.d(TAG, jsonString);
 
-            double changeRate = responseData.optJSONObject("rates").optDouble(targetCurrency);
+            double changeRate = responseData.optJSONObject("rates").optDouble(mTargetCurrency);
 
             Cursor spendingsCursor = mContext.getContentResolver().query(
                     SpendingsTable.CONTENT_URI,
@@ -115,13 +116,6 @@ public class CurrencyChangeAsyncTask extends AsyncTask<String, Void, Boolean> {
                 incomesCursor.close();
             }
 
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-            prefs.edit()
-                    .putString(mContext.getResources().getString(R.string.prefs_source_currency_key), targetCurrency)
-                    .commit();
-
             mContext.getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
 
             return true;
@@ -129,5 +123,16 @@ public class CurrencyChangeAsyncTask extends AsyncTask<String, Void, Boolean> {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    protected void onPostExecute(Boolean isSuccessful) {
+        super.onPostExecute(isSuccessful);
+
+        mListener.onCurrencyChanged(isSuccessful, mTargetCurrency);
+    }
+
+    public interface OnCurrenyChangeListener {
+        void onCurrencyChanged(boolean isSuccessful, String newCurrency);
     }
 }
