@@ -68,6 +68,10 @@
     <string name="loading_dialog_message">Please wait...</string>
     <string name="message_currency_changed_successfuly">Currency changed successfully</string>
     <string name="message_currency_change_error">Currency not changed, please try again later</string>
+    <string name="export_data_success">Exporting data finished.</string>
+    <string name="export_data_failed">Failed to export data.</string>
+    <string name="import_data_success">Importing data finished.</string>
+    <string name="import_data_failed">Failed to import data.</string>
 
     <string-array name="currencies">
         <item>EUR</item>

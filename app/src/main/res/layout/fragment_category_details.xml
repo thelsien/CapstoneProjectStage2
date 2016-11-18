@@ -55,6 +55,7 @@
             android:id="@+id/tv_empty_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/category_details_toolbar_height"
             android:gravity="center"
             android:text="@string/empty_list"/>
 

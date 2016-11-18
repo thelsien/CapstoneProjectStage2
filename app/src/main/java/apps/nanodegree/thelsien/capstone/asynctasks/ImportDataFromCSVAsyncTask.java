@@ -28,11 +28,13 @@ public class ImportDataFromCSVAsyncTask extends AsyncTask<Uri, Void, Boolean> {
     private static final String TAG = ImportDataFromCSVAsyncTask.class.getSimpleName();
 
     private Context mContext;
+    private OnImportDataListener mListener;
 
-    public ImportDataFromCSVAsyncTask(Context context) {
+    public ImportDataFromCSVAsyncTask(Context context, OnImportDataListener listener) {
         super();
 
         mContext = context;
+        mListener = listener;
     }
 
     @Override
@@ -88,6 +90,12 @@ public class ImportDataFromCSVAsyncTask extends AsyncTask<Uri, Void, Boolean> {
         return true;
     }
 
+    @Override
+    protected void onPostExecute(Boolean isSuccess) {
+        super.onPostExecute(isSuccess);
+        mListener.onImportFinished(isSuccess);
+    }
+
     private String getFilePath(Uri uri) {
         Cursor filePathCursor = mContext.getContentResolver().query(uri, null, null, null, null);
         String filePath;
@@ -122,5 +130,9 @@ public class ImportDataFromCSVAsyncTask extends AsyncTask<Uri, Void, Boolean> {
         public float value;
         public String note;
         public long date;
+    }
+
+    public interface OnImportDataListener {
+        void onImportFinished(boolean isSuccess);
     }
 }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -29,7 +30,7 @@ import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 /**
  * Created by frodo on 2016. 11. 13..
  */
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, ActivityCompat.OnRequestPermissionsResultCallback, DatePickerDialog.OnDateSetListener, CurrencyChangeAsyncTask.OnCurrenyChangeListener {
+public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, ActivityCompat.OnRequestPermissionsResultCallback, DatePickerDialog.OnDateSetListener, CurrencyChangeAsyncTask.OnCurrenyChangeListener, ExportDataToCSVAsyncTask.OnExportDataListener, ImportDataFromCSVAsyncTask.OnImportDataListener {
 
     public static final int FILE_CHOOSER_REQUEST_CODE = 1000;
 
@@ -39,10 +40,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final String TAG = SettingsFragment.class.getSimpleName();
 
     private ProgressDialog mProgressDialog;
+    private String mTimeIntervalBeforeChange;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
 
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setTitle(R.string.loading_dialog_title);
@@ -50,8 +54,23 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         mProgressDialog.setCancelable(false);
 
         addPreferencesFromResource(R.xml.main_preferences);
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.prefs_time_interval)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.prefs_current_currency_key)));
         findPreference(getString(R.string.prefs_export_data_to_csv)).setOnPreferenceClickListener(this);
         findPreference(getString(R.string.prefs_import_data_from_csv)).setOnPreferenceClickListener(this);
+
+        mTimeIntervalBeforeChange = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(getString(R.string.prefs_time_interval), getString(R.string.default_time_interval_month));
+    }
+
+    private void bindPreferenceSummaryToValue(Preference preference) {
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(this);
+
+        // Set the preference summaries
+        setPreferenceSummary(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getString(preference.getKey(), ""));
     }
 
     @Override
@@ -69,7 +88,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.prefs_current_currency_key))) {
             new CurrencyChangeAsyncTask(getActivity(), this).execute(
                     sharedPreferences.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency)),
@@ -80,16 +99,44 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             String newValue = sharedPreferences.getString(getString(R.string.prefs_time_interval), getString(R.string.default_time_interval_month));
             if (newValue.equals(getString(R.string.time_interval_custom))) {
                 Calendar cal = Calendar.getInstance();
-                DatePickerDialog.newInstance(
+                DatePickerDialog dialog = DatePickerDialog.newInstance(
                         this,
                         cal.get(Calendar.YEAR),
                         cal.get(Calendar.MONTH),
                         cal.get(Calendar.DAY_OF_MONTH)
-                ).show(getFragmentManager(), "date_interval_picker");
+                );
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        ListPreference pref = (ListPreference) findPreference(getString(R.string.prefs_time_interval));
+                        pref.setValue(mTimeIntervalBeforeChange);
+                        setPreferenceSummary(pref, pref.getValue());
+                        sharedPreferences.edit()
+                                .putString(getString(R.string.prefs_time_interval), mTimeIntervalBeforeChange)
+                                .commit();
+                        Utility.notifyThroughContentResolver(getActivity());
+                    }
+                });
+
+                dialog.show(getFragmentManager(), "date_interval_picker");
             } else {
-                getActivity().getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
+                mTimeIntervalBeforeChange = newValue;
+                Utility.notifyThroughContentResolver(getActivity());
             }
         }
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object value) {
+        setPreferenceSummary(preference, value);
+        return true;
+    }
+
+    private void setPreferenceSummary(Preference preference, Object value) {
+        String stringValue = value.toString();
+
+        int prefIndex = ((ListPreference) preference).findIndexOfValue(stringValue);
+        preference.setSummary(((ListPreference) preference).getEntries()[prefIndex]);
     }
 
     @Override
@@ -112,13 +159,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             switch (requestCode) {
                 case WRITE_STORAGE_REQUEST_CODE:
-                    new ExportDataToCSVAsyncTask(getActivity()).execute();
-                    mProgressDialog.show();
+                    startExportData();
                     break;
                 case READ_STORAGE_REQUEST_CODE:
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("file/*");
-                    startActivityForResult(intent, FILE_CHOOSER_REQUEST_CODE);
+                    startFileChooserForImport();
                     break;
             }
         } else {
@@ -148,8 +192,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            new ImportDataFromCSVAsyncTask(getActivity()).execute(data.getData());
             mProgressDialog.show();
+            new ImportDataFromCSVAsyncTask(getActivity(), this).execute(data.getData());
         }
     }
 
@@ -178,6 +222,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             prefs.edit()
                     .putString(getString(R.string.prefs_source_currency_key), newCurrency)
                     .commit();
+
+            Utility.notifyThroughContentResolver(getActivity());
         } else {
             String sourceCurrency = prefs.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency));
             prefs.edit()
@@ -186,6 +232,35 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
 
         int messageResId = isSuccessful ? R.string.message_currency_changed_successfuly : R.string.message_currency_change_error;
+
+        Toast.makeText(getActivity(), messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onExportDataFinished(boolean isSuccess) {
+        mProgressDialog.dismiss();
+        int messageResId = isSuccess ? R.string.export_data_success : R.string.export_data_failed;
+
+        Toast.makeText(getActivity(), messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    public void startExportData() {
+        mProgressDialog.show();
+        new ExportDataToCSVAsyncTask(getActivity(), this).execute();
+    }
+
+    public void startFileChooserForImport() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        startActivityForResult(intent, FILE_CHOOSER_REQUEST_CODE);
+    }
+
+    @Override
+    public void onImportFinished(boolean isSuccess) {
+        mProgressDialog.dismiss();
+        Utility.notifyThroughContentResolver(getActivity());
+
+        int messageResId = isSuccess ? R.string.import_data_success : R.string.import_data_failed;
 
         Toast.makeText(getActivity(), messageResId, Toast.LENGTH_SHORT).show();
     }

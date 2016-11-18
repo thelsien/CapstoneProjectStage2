@@ -20,21 +20,23 @@ import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
  * Created by frodo on 2016. 11. 14..
  */
 
-public class ExportDataToCSVAsyncTask extends AsyncTask<Void, Void, Void> {
+public class ExportDataToCSVAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
     private static final String TAG = ExportDataToCSVAsyncTask.class.getSimpleName();
 
     private SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd_HH-mm-ss", Locale.getDefault());
     private Context mContext;
+    private OnExportDataListener mListener;
 
-    public ExportDataToCSVAsyncTask(Context context) {
+    public ExportDataToCSVAsyncTask(Context context, OnExportDataListener listener) {
         super();
 
         mContext = context;
+        mListener = listener;
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected Boolean doInBackground(Void... voids) {
         Calendar cal = Calendar.getInstance();
 
         String fileName = sdf.format(cal.getTime()) + ".csv";
@@ -50,7 +52,7 @@ public class ExportDataToCSVAsyncTask extends AsyncTask<Void, Void, Void> {
             }
 
             if (!isFileCreated) {
-                return null;
+                return false;
             }
 
             String fullPathToFile = folder.toString();
@@ -146,11 +148,23 @@ public class ExportDataToCSVAsyncTask extends AsyncTask<Void, Void, Void> {
             fw.flush();
             fw.close();
             Log.d(TAG, "File created, saved.");
+
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
 
-        return null;
+        return true;
     }
 
+    @Override
+    protected void onPostExecute(Boolean isSuccess) {
+        super.onPostExecute(isSuccess);
+
+        mListener.onExportDataFinished(isSuccess);
+    }
+
+    public interface OnExportDataListener {
+        void onExportDataFinished(boolean isSuccess);
+    }
 }

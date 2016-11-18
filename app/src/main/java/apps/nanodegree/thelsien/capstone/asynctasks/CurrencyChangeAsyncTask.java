@@ -12,7 +12,6 @@ import java.io.IOException;
 
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
-import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTableConfig;
 import okhttp3.OkHttpClient;
@@ -115,8 +114,6 @@ public class CurrencyChangeAsyncTask extends AsyncTask<String, Void, Boolean> {
 
                 incomesCursor.close();
             }
-
-            mContext.getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
 
             return true;
         } catch (IOException | JSONException e) {
