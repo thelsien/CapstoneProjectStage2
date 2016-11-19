@@ -1,27 +1,28 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">MoneyTrackR</string>
+    <string name="app_name" translatable="false">MoneyTrackR</string>
 
-    <string name="default_currency">USD</string>
-    <string name="prefs_current_currency_key">prefs_current_currency_key</string>
-    <string name="prefs_source_currency_key">prefs_source_currency_key</string>
-    <string name="prefs_is_first_run_done">prefs_is_first_run_done</string>
-    <string name="prefs_export_data_to_csv">prefs_export_data_csv_key</string>
-    <string name="prefs_import_data_from_csv">prefs_import_data_from_csv_key</string>
+    <string name="prefs_current_currency_key" translatable="false">prefs_current_currency_key</string>
+    <string name="prefs_source_currency_key" translatable="false">prefs_source_currency_key</string>
+    <string name="prefs_is_first_run_done" translatable="false">prefs_is_first_run_done</string>
+    <string name="prefs_export_data_to_csv" translatable="false">prefs_export_data_csv_key</string>
+    <string name="prefs_import_data_from_csv" translatable="false">prefs_import_data_from_csv_key</string>
+    <string name="prefs_time_interval" translatable="false">prefs_time_interval_key</string>
+    <string name="time_interval_year" translatable="false">current_year</string>
+    <string name="time_interval_day" translatable="false">current_day</string>
+    <string name="time_interval_custom" translatable="false">custom_interval</string>
+    <string name="default_time_interval_month" translatable="false">current_month</string>
+    <string name="default_currency" translatable="false">USD</string>
+    <string name="custom_interval_start_year" translatable="false">interval_start_year</string>
+    <string name="custom_interval_start_month" translatable="false">interval_start_month</string>
+    <string name="custom_interval_start_day" translatable="false">interval_start_day</string>
+    <string name="custom_interval_end_year" translatable="false">interval_end_year</string>
+    <string name="custom_interval_end_month" translatable="false">interval_end_month</string>
+    <string name="custom_interval_end_day" translatable="false">interval_end_day</string>
+
     <string name="permission_explanation_dialog_title">Permission needed</string>
     <string name="permission_explanation_message">CSV files can only be opened from (or written to) your phone, if you allow us to use your phone\'s storage.</string>
     <string name="permission_explanation_button">Okay</string>
     <string name="permission_needed">Permission denied, please go to options menu to grant access for the app.</string>
-    <string name="prefs_time_interval">prefs_time_interval_key</string>
-    <string name="default_time_interval_month">current_month</string>
-    <string name="time_interval_year">current_year</string>
-    <string name="time_interval_day">current_day</string>
-    <string name="time_interval_custom">custom_interval</string>
-    <string name="custom_interval_start_year">interval_start_year</string>
-    <string name="custom_interval_start_month">interval_start_month</string>
-    <string name="custom_interval_start_day">interval_start_day</string>
-    <string name="custom_interval_end_year">interval_end_year</string>
-    <string name="custom_interval_end_month">interval_end_month</string>
-    <string name="custom_interval_end_day">interval_end_day</string>
     <string name="incomes_title">Incomes</string>
     <string name="spendings_title">Spendings</string>
     <string name="balance_title">Balance</string>
@@ -43,6 +44,7 @@
     <string name="add_edit_save_delete_error">Zero or more than 1 row was affected</string>
     <string name="add_edit_delete_successful">Deleted entry</string>
     <string name="category_chooser_entry_updated">Entry updated</string>
+
     <string name="category_bills">Bills</string>
     <string name="category_car">Car</string>
     <string name="category_clothes">Clothes</string>
@@ -59,6 +61,7 @@
     <string name="category_taxi">Taxi</string>
     <string name="category_toiletry">Toiletry</string>
     <string name="category_transport">Transport</string>
+
     <string name="fab_spending">Add a new spending entry</string>
     <string name="fab_income">Add a new income entry</string>
     <string name="fab_open">Open new entry menu</string>
@@ -77,42 +80,4 @@
     <string name="no_network_dialog_positive">Open settings</string>
     <string name="add_edit_not_a_number_error">The value must be a number!</string>
     <string name="add_edit_number_field_required">This field is required!</string>
-
-    <string-array name="currencies">
-        <item>EUR</item>
-        <item>GBP</item>
-        <item>AUD</item>
-        <item>NZD</item>
-        <item>USD</item>
-        <item>CAD</item>
-        <item>CHF</item>
-        <item>JPY</item>
-        <item>HUF</item>
-    </string-array>
-
-    <string-array name="currencies_names">
-        <item>Euro (EUR)</item>
-        <item>Pound Sterling (GBP)</item>
-        <item>Australian dollar (AUD)</item>
-        <item>New Zeland dollar (NZD)</item>
-        <item>United States dollar (USD)</item>
-        <item>Canadian dollar (CAD)</item>
-        <item>Swiss franc (CHF)</item>
-        <item>Japanese yen (JPY)</item>
-        <item>Hungarian forint (HUF)</item>
-    </string-array>
-
-    <string-array name="time_intervals">
-        <item>@string/time_interval_day</item>
-        <item>@string/default_time_interval_month</item>
-        <item>@string/time_interval_year</item>
-        <item>@string/time_interval_custom</item>
-    </string-array>
-
-    <string-array name="time_intervals_names">
-        <item>Current Day</item>
-        <item>Current Month</item>
-        <item>Current Year</item>
-        <item>Custom Interval</item>
-    </string-array>
 </resources>

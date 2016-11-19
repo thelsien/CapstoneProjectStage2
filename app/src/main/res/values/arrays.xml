@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="currencies">
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>AUD</item>
+        <item>NZD</item>
+        <item>USD</item>
+        <item>CAD</item>
+        <item>CHF</item>
+        <item>JPY</item>
+        <item>HUF</item>
+    </string-array>
+
+    <string-array name="currencies_names">
+        <item>Euro (EUR)</item>
+        <item>Pound Sterling (GBP)</item>
+        <item>Australian dollar (AUD)</item>
+        <item>New Zeland dollar (NZD)</item>
+        <item>United States dollar (USD)</item>
+        <item>Canadian dollar (CAD)</item>
+        <item>Swiss franc (CHF)</item>
+        <item>Japanese yen (JPY)</item>
+        <item>Hungarian forint (HUF)</item>
+    </string-array>
+
+    <string-array name="time_intervals">
+        <item>@string/time_interval_day</item>
+        <item>@string/default_time_interval_month</item>
+        <item>@string/time_interval_year</item>
+        <item>@string/time_interval_custom</item>
+    </string-array>
+
+    <string-array name="time_intervals_names">
+        <item>Current Day</item>
+        <item>Current Month</item>
+        <item>Current Year</item>
+        <item>Custom Interval</item>
+    </string-array>
+</resources>

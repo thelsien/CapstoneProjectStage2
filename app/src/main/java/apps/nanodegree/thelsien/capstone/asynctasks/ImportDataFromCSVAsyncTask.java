@@ -59,7 +59,13 @@ public class ImportDataFromCSVAsyncTask extends AsyncTask<Uri, Void, Boolean> {
 
             while ((line = reader.readLine()) != null) {
                 Log.d(TAG, line);
-                RowFromCSV rowData = new RowFromCSV(line);
+                RowFromCSV rowData;
+                try {
+                    rowData = new RowFromCSV(line);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return false;
+                }
 
                 if (rowData.categoryId != -1) {
                     SpendingsTableConfig config = new SpendingsTableConfig();
@@ -115,7 +121,7 @@ public class ImportDataFromCSVAsyncTask extends AsyncTask<Uri, Void, Boolean> {
 
     private class RowFromCSV {
 
-        public RowFromCSV(String csvRow) {
+        public RowFromCSV(String csvRow) throws Throwable {
             String[] parts = csvRow.split(";");
 
             id = Integer.parseInt(parts[0]);
