@@ -144,6 +144,7 @@ public class AddEditEntryFragment extends Fragment {
                     Log.d(TAG, "Success");
 
                     Utility.notifyThroughContentResolver(getContext());
+                    Utility.updateWidgets(getContext());
 
                     getActivity().finish();
                 } else {
@@ -212,6 +213,7 @@ public class AddEditEntryFragment extends Fragment {
                     Log.d(TAG, "Success");
 
                     Utility.notifyThroughContentResolver(getContext());
+                    Utility.updateWidgets(getContext());
 
                     getActivity().finish();
                 } else {
@@ -348,6 +350,7 @@ public class AddEditEntryFragment extends Fragment {
         }
 
         Utility.notifyThroughContentResolver(getContext());
+        Utility.updateWidgets(getContext());
 
         getActivity().finish();
     }
@@ -366,6 +369,7 @@ public class AddEditEntryFragment extends Fragment {
         }
 
         Utility.notifyThroughContentResolver(getContext());
+        Utility.updateWidgets(getContext());
 
         getActivity().finish();
     }

@@ -2,6 +2,7 @@ package apps.nanodegree.thelsien.capstone;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -17,6 +18,7 @@ import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTableConfig;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
+import apps.nanodegree.thelsien.capstone.widget.MoneyTrackRWidgetProvider;
 
 /**
  * Created by frodo on 2016. 11. 08..
@@ -272,5 +274,11 @@ public class Utility {
             c2.close();
         }
         return spendingsSum;
+    }
+
+    public static void updateWidgets(Context context) {
+        Intent dataUpdatedIntent = new Intent(MoneyTrackRWidgetProvider.ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 }

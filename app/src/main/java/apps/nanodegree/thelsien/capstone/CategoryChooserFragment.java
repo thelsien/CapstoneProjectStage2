@@ -101,6 +101,7 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
         }
 
         Utility.notifyThroughContentResolver(getContext());
+        Utility.updateWidgets(getContext());
 
         getActivity().finish();
     }

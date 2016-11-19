@@ -28,4 +28,11 @@
     <dimen name="category_details_toolbar_height">140dp</dimen>
     <dimen name="add_edit_entry_content_padding">@dimen/padding_16dp</dimen>
     <dimen name="main_toolbar_element_margin_bottom">@dimen/padding_8dp</dimen>
+
+    <dimen name="widget_min_height">40dp</dimen>
+    <dimen name="widget_min_width">110dp</dimen>
+    <dimen name="widget_min_resize_width">40dp</dimen>
+    <dimen name="widget_min_resize_height">40dp</dimen>
+    <dimen name="widget_large_height">160dp</dimen>
+    <dimen name="widget_medium_height">100dp</dimen>
 </resources>

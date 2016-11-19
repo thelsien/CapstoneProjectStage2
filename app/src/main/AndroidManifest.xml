@@ -48,6 +48,16 @@
                 android:value="apps.nanodegree.thelsien.capstone.MainActivity"/>
         </activity>
 
+        <service android:name=".widget.MoneyTrackRWidgetIntentService"/>
+        <receiver android:name=".widget.MoneyTrackRWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="app.nanodegree.thelsien.capstone.ACTION_DATA_UPDATED"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_provider"/>
+        </receiver>
+
         <provider
             android:name="apps.nanodegree.thelsien.capstone.data.CategoriesProvider"
             android:authorities="apps.nanodegree.thelsien.capstone.authority"

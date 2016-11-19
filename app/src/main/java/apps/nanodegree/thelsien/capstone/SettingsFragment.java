@@ -26,7 +26,6 @@ import java.util.Calendar;
 import apps.nanodegree.thelsien.capstone.asynctasks.CurrencyChangeAsyncTask;
 import apps.nanodegree.thelsien.capstone.asynctasks.ExportDataToCSVAsyncTask;
 import apps.nanodegree.thelsien.capstone.asynctasks.ImportDataFromCSVAsyncTask;
-import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
 
 /**
  * Created by frodo on 2016. 11. 13..
@@ -118,6 +117,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     preference.setValue(sourceCurrency);
 
                     Utility.notifyThroughContentResolver(getActivity());
+                    Utility.updateWidgets(getActivity());
                     setPreferenceSummary(preference, sourceCurrency);
 
                     AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -153,6 +153,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                                 .putString(getString(R.string.prefs_time_interval), mTimeIntervalBeforeChange)
                                 .commit();
                         Utility.notifyThroughContentResolver(getActivity());
+                        Utility.updateWidgets(getActivity());
                     }
                 });
 
@@ -160,6 +161,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             } else {
                 mTimeIntervalBeforeChange = newValue;
                 Utility.notifyThroughContentResolver(getActivity());
+                Utility.updateWidgets(getActivity());
             }
         }
     }
@@ -248,7 +250,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 .putInt(getString(R.string.custom_interval_end_day), dayOfMonthEnd)
                 .commit();
 
-        getActivity().getContentResolver().notifyChange(MainCategoriesTable.CONTENT_URI, null);
+        Utility.notifyThroughContentResolver(getActivity());
+        Utility.updateWidgets(getActivity());
     }
 
     @Override
@@ -262,6 +265,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     .commit();
 
             Utility.notifyThroughContentResolver(getActivity());
+            Utility.updateWidgets(getActivity());
         } else {
             String sourceCurrency = prefs.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency));
             prefs.edit()
@@ -297,6 +301,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public void onImportFinished(boolean isSuccess) {
         mProgressDialog.dismiss();
         Utility.notifyThroughContentResolver(getActivity());
+        Utility.updateWidgets(getActivity());
 
         int messageResId = isSuccess ? R.string.import_data_success : R.string.import_data_failed;
 
