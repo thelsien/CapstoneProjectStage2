@@ -46,6 +46,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Utility.trackScreen(getActivity(), "settings");
+
         setRetainInstance(true);
 
         mProgressDialog = new ProgressDialog(getActivity());

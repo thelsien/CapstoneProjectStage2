@@ -85,6 +85,8 @@ public class AddEditEntryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_edit_entry, container, false);
 
+        Utility.trackScreen(getContext(), "add_edit_entry_fragment");
+
         mInterstitialAd = new InterstitialAd(getContext());
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
 
@@ -162,6 +164,7 @@ public class AddEditEntryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (isValueValid()) {
+                    Utility.trackEvent(getContext(), "button", "click", "add_new_income_entry");
                     Calendar cal = Calendar.getInstance();
                     IncomesTableConfig config = new IncomesTableConfig();
 
@@ -216,6 +219,7 @@ public class AddEditEntryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (isValueValid()) {
+                    Utility.trackEvent(getContext(), "button", "click", "add_new_entry");
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
                             .addToBackStack("other_fragment")
@@ -238,6 +242,8 @@ public class AddEditEntryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (isValueValid()) {
+                    Utility.trackEvent(getContext(), "button", "click", "add_entry_to_category_" + mCategoryId);
+
                     Calendar cal = Calendar.getInstance();
                     SpendingsTableConfig config = new SpendingsTableConfig();
 
@@ -290,6 +296,7 @@ public class AddEditEntryFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (isValueValid()) {
+                        Utility.trackEvent(getContext(), "button", "click", "entry_edit");
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
                                 .addToBackStack("other_fragment")
@@ -326,6 +333,7 @@ public class AddEditEntryFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 1:
+                Utility.trackEvent(getContext(), "button", "click", "deleted_entry");
                 deleteEntryFromDB(
                         mIsIncome ? IncomesTable.CONTENT_URI : SpendingsTable.CONTENT_URI,
                         mIsIncome ? IncomesTable.FIELD_ID : SpendingsTable.FIELD_ID
@@ -333,6 +341,7 @@ public class AddEditEntryFragment extends Fragment {
                 break;
             case 2:
                 if (isValueValid()) {
+                    Utility.trackEvent(getContext(), "button", "click", "entry_saved_after_editing");
                     saveEntryToDB(
                             mIsIncome ? IncomesTable.CONTENT_URI : SpendingsTable.CONTENT_URI,
                             mIsIncome ? IncomesTable.FIELD_ID : SpendingsTable.FIELD_ID

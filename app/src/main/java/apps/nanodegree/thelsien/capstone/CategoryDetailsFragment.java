@@ -41,15 +41,16 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
     private CategoryEntryAdapter mAdapter;
     private TextView mEmptyView;
     private ImageView mCategoryIconView;
+    private String mCategoryTitle;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_category_details, container, false);
+
         Bundle arguments = getArguments();
         mCategoryId = arguments.getInt(CategoryDetailsActivity.INTENT_EXTRA_CATEGORY_ID);
         mIsShouldShowIncome = arguments.getBoolean(CategoryDetailsActivity.INTENT_EXTRA_IS_INCOME, false);
-
-        View rootView = inflater.inflate(R.layout.fragment_category_details, container, false);
 
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lv_list);
@@ -71,6 +72,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
                 }
                 intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, mIsShouldShowIncome);
 
+                Utility.trackEvent(getContext(), "button", "click", "add_entry_to_category_" + mCategoryTitle);
                 getActivity().startActivity(intent);
             }
         });
@@ -80,6 +82,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
         if (!mIsShouldShowIncome) {
             getIconAndNameForSpendingCategory();
         } else {
+            Utility.trackScreen(getContext(), "category_details_incomes");
             mCategoryIconView.setImageResource(R.drawable.ic_golf_course_black_48dp);
             mCategoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(R.string.incomes_title)));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.incomes_title));
@@ -99,9 +102,13 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
         if (c != null) {
             c.moveToFirst();
 
+            mCategoryTitle = getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)));
+
             mCategoryIconView.setImageResource(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_ICON_RES)));
             mCategoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES)))));
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(c.getInt(c.getColumnIndex(MainCategoriesTable.FIELD_NAME_RES))));
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mCategoryTitle);
+
+            Utility.trackScreen(getContext(), "category_details_" + mCategoryTitle);
 
             c.close();
         }

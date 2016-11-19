@@ -57,6 +57,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+        Utility.trackScreen(getContext(), "main_categories");
     }
 
     @Override
@@ -212,11 +213,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 animateFABOpeningClosing();
                 break;
             case R.id.fab_add_spending:
+                Utility.trackEvent(getContext(), "button", "click", "add spending");
                 animateFABOpeningClosing();
                 intent = new Intent(getContext(), AddEditEntryActivity.class);
                 startActivity(intent);
                 break;
             case R.id.fab_add_income:
+                Utility.trackEvent(getContext(), "button", "click", "add income");
                 animateFABOpeningClosing();
                 intent = new Intent(getContext(), AddEditEntryActivity.class);
                 intent.putExtra(AddEditEntryFragment.ARGUMENT_IS_INCOME, true);

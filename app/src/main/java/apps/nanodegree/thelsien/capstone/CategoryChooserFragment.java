@@ -65,6 +65,8 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_category_chooser, container, false);
 
+        Utility.trackScreen(getContext(), "category_chooser_fragment");
+
         mInterstitialAd = new InterstitialAd(getContext());
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
 
@@ -131,6 +133,7 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
 
         Utility.notifyThroughContentResolver(getContext());
         Utility.updateWidgets(getContext());
+        Utility.trackEvent(getContext(), "button", "click", "category_chosen_for_entry");
 
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();

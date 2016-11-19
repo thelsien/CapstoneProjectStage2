@@ -7,7 +7,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.NumberFormat;
 import java.util.Calendar;
@@ -280,5 +283,24 @@ public class Utility {
         Intent dataUpdatedIntent = new Intent(MoneyTrackRWidgetProvider.ACTION_DATA_UPDATED)
                 .setPackage(context.getPackageName());
         context.sendBroadcast(dataUpdatedIntent);
+    }
+
+    public static void trackScreen(Context context, String screenName) {
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "screen");
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME, screenName);
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, params);
+    }
+
+    public static void trackEvent(Context context, String category, String action, String label) {
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        Bundle params = new Bundle();
+        params.putString("category", category);
+        params.putString("action", action);
+        params.putString("label", label);
+
+        firebaseAnalytics.logEvent("ga_event", params);
     }
 }
