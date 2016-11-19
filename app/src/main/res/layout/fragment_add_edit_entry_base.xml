@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/add_edit_entry_content_padding"
+        android:paddingRight="@dimen/add_edit_entry_content_padding">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:paddingBottom="@dimen/padding_16dp"
+            android:paddingTop="@dimen/padding_16dp"
+            android:text="@string/add_spending_title"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/add_edit_title_text_size"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="9">
+
+                <EditText
+                    android:id="@+id/et_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_edit_spendings_edit_text_hint"
+                    tools:text="555.55"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_currency"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="@dimen/add_edit_currency_padding_top"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_size_14sp"
+                tools:text="@string/default_currency"/>
+        </LinearLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_8dp">
+
+            <EditText
+                android:id="@+id/et_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/add_edit_note_edit_text_hint"
+                tools:text="Bought food in the shop"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_choose_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/colorAccent"
+            android:padding="@dimen/padding_4dp"
+            android:text="@string/add_edit_button_choose_category"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
+
+</LinearLayout>

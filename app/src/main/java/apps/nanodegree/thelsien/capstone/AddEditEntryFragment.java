@@ -199,8 +199,6 @@ public class AddEditEntryFragment extends Fragment {
         mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), String.valueOf(mCategoryId), Toast.LENGTH_SHORT).show();
-
                 Calendar cal = Calendar.getInstance();
                 SpendingsTableConfig config = new SpendingsTableConfig();
 

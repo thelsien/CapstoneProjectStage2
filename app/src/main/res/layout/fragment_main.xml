@@ -35,7 +35,7 @@
                         android:id="@+id/tv_incomes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/padding_8dp"
+                        android:layout_marginBottom="@dimen/main_toolbar_element_margin_bottom"
                         android:textColor="@color/income_color"
                         android:textSize="@dimen/toolbar_value_text_size"
                         tools:text="555.55"/>
@@ -49,7 +49,7 @@
                         android:id="@+id/tv_spendings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/padding_8dp"
+                        android:layout_marginBottom="@dimen/main_toolbar_element_margin_bottom"
                         android:textColor="@color/spendings_color"
                         android:textSize="@dimen/toolbar_value_text_size"
                         tools:text="555.55"/>

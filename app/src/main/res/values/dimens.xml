@@ -1,22 +1,31 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="list_percent_size">20sp</dimen>
-    <dimen name="list_image_width">32dp</dimen>
-    <dimen name="list_category_title_padding">8dp</dimen>
-    <dimen name="main_toolbar_height">150dp</dimen>
-    <dimen name="toolbar_value_text_size">16sp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
     <dimen name="padding_16dp">16dp</dimen>
-    <dimen name="main_category_icon_width">32dp</dimen>
-    <dimen name="padding_4dp">4dp</dimen>
-    <dimen name="category_entry_value_text_size">18sp</dimen>
+    <dimen name="padding_32dp">32dp</dimen>
+
     <dimen name="text_size_12sp">12sp</dimen>
-    <dimen name="toolbar_elevation">4dp</dimen>
-    <dimen name="add_edit_title_text_size">20sp</dimen>
-    <dimen name="add_edit_currency_padding_top">10dp</dimen>
+    <dimen name="text_size_14sp">14sp</dimen>
     <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_18sp">18sp</dimen>
+    <dimen name="text_size_20sp">20sp</dimen>
+
+    <dimen name="activity_horizontal_margin">@dimen/padding_16dp</dimen>
+    <dimen name="activity_vertical_margin">@dimen/padding_16dp</dimen>
+    <dimen name="list_percent_size">@dimen/text_size_20sp</dimen>
+    <dimen name="list_image_width">@dimen/padding_32dp</dimen>
+    <dimen name="list_category_title_padding">@dimen/padding_8dp</dimen>
+    <dimen name="main_toolbar_height">150dp</dimen>
+    <dimen name="toolbar_value_text_size">@dimen/text_size_16sp</dimen>
+
+    <dimen name="main_category_icon_width">@dimen/padding_32dp</dimen>
+    <dimen name="category_entry_value_text_size">@dimen/text_size_18sp</dimen>
+    <dimen name="toolbar_elevation">@dimen/padding_4dp</dimen>
+    <dimen name="add_edit_title_text_size">@dimen/text_size_20sp</dimen>
+    <dimen name="add_edit_currency_padding_top">10dp</dimen>
     <dimen name="category_details_icon_size">50dp</dimen>
     <dimen name="category_details_toolbar_height">140dp</dimen>
+    <dimen name="add_edit_entry_content_padding">@dimen/padding_16dp</dimen>
+    <dimen name="main_toolbar_element_margin_bottom">@dimen/padding_8dp</dimen>
 </resources>
