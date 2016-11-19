@@ -37,14 +37,14 @@ public class Utility {
     };
 
     private static int[] categoryIconIds = new int[]{
-            R.drawable.ic_kitchen_black_48dp, R.drawable.ic_clear_black_48dp,
-            R.drawable.ic_free_breakfast_black_48dp, R.drawable.ic_golf_course_black_48dp,
-            R.drawable.ic_golf_course_black_48dp, R.drawable.ic_remove_circle_black_48dp,
-            R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp,
-            R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp,
-            R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp,
-            R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp,
-            R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp
+            R.drawable.banknotes, R.drawable.sedan,
+            R.drawable.shirt, R.drawable.phone,
+            R.drawable.restaurant, R.drawable.controller,
+            R.drawable.vegetarian_food, R.drawable.gift,
+            R.drawable.thermometer, R.drawable.home,
+            R.drawable.apartment, R.drawable.cat,
+            R.drawable.sport, R.drawable.taxi,
+            R.drawable.toothpaste, R.drawable.train
     };
 
     public static boolean isNetworkAvailable(Context context) {

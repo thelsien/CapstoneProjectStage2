@@ -321,10 +321,10 @@ public class AddEditEntryFragment extends Fragment {
 
         if (mUri != null) {
             menu.add(Menu.NONE, 1, 100, R.string.menu_delete)
-                    .setIcon(R.drawable.ic_clear_black_48dp)
+                    .setIcon(R.drawable.trash)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             menu.add(Menu.NONE, 2, 200, R.string.menu_save)
-                    .setIcon(R.drawable.ic_golf_course_black_48dp)
+                    .setIcon(R.drawable.ok)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
     }

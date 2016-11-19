@@ -83,7 +83,7 @@ public class CategoryDetailsFragment extends Fragment implements LoaderManager.L
             getIconAndNameForSpendingCategory();
         } else {
             Utility.trackScreen(getContext(), "category_details_incomes");
-            mCategoryIconView.setImageResource(R.drawable.ic_golf_course_black_48dp);
+            mCategoryIconView.setImageResource(R.drawable.purse);
             mCategoryIconView.setContentDescription(String.format(getString(R.string.content_description_category_icon), getString(R.string.incomes_title)));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.incomes_title));
         }
