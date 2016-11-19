@@ -10,11 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import apps.nanodegree.thelsien.capstone.R;
+import apps.nanodegree.thelsien.capstone.Utility;
 import apps.nanodegree.thelsien.capstone.data.SpendingsTable;
 
 /**
@@ -51,8 +50,9 @@ public class CategoryEntryAdapter extends RecyclerView.Adapter<CategoryEntryAdap
     public void onBindViewHolder(SpendingsViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        holder.mCurrencyView.setText(mCurrencyString);
-        holder.mValueView.setText(NumberFormat.getInstance(Locale.getDefault()).format(mCursor.getFloat(mCursor.getColumnIndex(SpendingsTable.FIELD_VALUE))));
+        holder.mValueView.setText(Utility.getValueFormatWithCurrency(mContext)
+                .format(mCursor.getFloat(mCursor.getColumnIndex(SpendingsTable.FIELD_VALUE)))
+        );
         holder.mNoteView.setText(mCursor.getString(mCursor.getColumnIndex(SpendingsTable.FIELD_NOTE)));
 
         Calendar cal = Calendar.getInstance();
@@ -81,7 +81,6 @@ public class CategoryEntryAdapter extends RecyclerView.Adapter<CategoryEntryAdap
         public TextView mValueView;
         public TextView mNoteView;
         public TextView mDateView;
-        public TextView mCurrencyView;
 
         public SpendingsViewHolder(View itemView) {
             super(itemView);
@@ -89,7 +88,6 @@ public class CategoryEntryAdapter extends RecyclerView.Adapter<CategoryEntryAdap
             mValueView = (TextView) itemView.findViewById(R.id.tv_value);
             mNoteView = (TextView) itemView.findViewById(R.id.tv_note);
             mDateView = (TextView) itemView.findViewById(R.id.tv_date);
-            mCurrencyView = (TextView) itemView.findViewById(R.id.tv_currency);
             itemView.setOnClickListener(this);
         }
 

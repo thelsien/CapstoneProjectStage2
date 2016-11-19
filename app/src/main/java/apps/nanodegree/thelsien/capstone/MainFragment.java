@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
-import java.util.Locale;
 
 import apps.nanodegree.thelsien.capstone.adapters.CategoriesAdapter;
 import apps.nanodegree.thelsien.capstone.data.MainCategoriesTable;
@@ -43,7 +42,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private RecyclerView mRecyclerView;
     private CategoriesAdapter mCategoryAdapter;
 
-    private boolean isFabOpen = false;
+    private boolean mIsFabOpen = false;
     private FloatingActionButton mMainFab;
     private FloatingActionButton mSpendingFab;
     private FloatingActionButton mIncomeFab;
@@ -58,6 +57,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("is_fab_open", mIsFabOpen);
+        super.onSaveInstanceState(outState);
     }
 
     @Nullable
@@ -91,14 +96,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     public void animateFABOpeningClosing() {
-        if (isFabOpen) {
+        if (mIsFabOpen) {
             mMainFab.setContentDescription(getString(R.string.fab_open));
             mMainFab.startAnimation(mRotateBackward);
             mSpendingFab.startAnimation(mFabClose);
             mIncomeFab.startAnimation(mFabClose);
             mSpendingFab.setClickable(false);
             mIncomeFab.setClickable(false);
-            isFabOpen = false;
+            mIsFabOpen = false;
         } else {
             mMainFab.setContentDescription(getString(R.string.fab_close));
             mMainFab.startAnimation(mRotateForward);
@@ -106,7 +111,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             mIncomeFab.startAnimation(mFabOpen);
             mSpendingFab.setClickable(true);
             mIncomeFab.setClickable(true);
-            isFabOpen = true;
+            mIsFabOpen = true;
         }
     }
 
@@ -137,6 +142,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean("is_fab_open")) {
+                mIsFabOpen = !savedInstanceState.getBoolean("is_fab_open");
+                animateFABOpeningClosing();
+            }
+        }
+
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -166,20 +179,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         float spendingsSum = Utility.getSpendingsSum(getContext());
 
         TextView incomesTextView = (TextView) getView().findViewById(R.id.tv_incomes);
-        TextView incomesCurrencyView = (TextView) getView().findViewById(R.id.tv_incomes_currency);
+//        TextView incomesCurrencyView = (TextView) getView().findViewById(R.id.tv_incomes_currency);
         TextView spendingsTextView = (TextView) getView().findViewById(R.id.tv_spendings);
-        TextView spendingsCurrencyView = (TextView) getView().findViewById(R.id.tv_spendings_currency);
+//        TextView spendingsCurrencyView = (TextView) getView().findViewById(R.id.tv_spendings_currency);
         TextView balanceTextView = (TextView) getView().findViewById(R.id.tv_balance);
-        TextView balanceCurrencyView = (TextView) getView().findViewById(R.id.tv_balance_currency);
+        //TextView balanceCurrencyView = (TextView) getView().findViewById(R.id.tv_balance_currency);
 
-        incomesTextView.setText(NumberFormat.getInstance(Locale.getDefault()).format(incomesSum));
-        spendingsTextView.setText(NumberFormat.getInstance(Locale.getDefault()).format(spendingsSum));
-        balanceTextView.setText(NumberFormat.getInstance(Locale.getDefault()).format(incomesSum - spendingsSum));
-
-        String currentCurrency = Utility.getCurrentCurrency(getContext());
-        incomesCurrencyView.setText(currentCurrency);
-        spendingsCurrencyView.setText(currentCurrency);
-        balanceCurrencyView.setText(currentCurrency);
+        NumberFormat format = Utility.getValueFormatWithCurrency(getContext());
+        incomesTextView.setText(format.format(incomesSum));
+        spendingsTextView.setText(format.format(spendingsSum));
+        balanceTextView.setText(format.format(incomesSum - spendingsSum));
     }
 
     @Override

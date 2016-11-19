@@ -31,11 +31,6 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/tv_currency"
-            style="@style/CurrencyTextView"
-            tools:text="@string/default_currency"/>
-
-        <TextView
             android:id="@+id/tv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

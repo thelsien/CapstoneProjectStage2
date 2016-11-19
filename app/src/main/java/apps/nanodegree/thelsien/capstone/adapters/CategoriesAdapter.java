@@ -2,7 +2,6 @@ package apps.nanodegree.thelsien.capstone.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.text.NumberFormat;
-import java.util.Locale;
 
 import apps.nanodegree.thelsien.capstone.R;
 import apps.nanodegree.thelsien.capstone.Utility;
@@ -59,8 +55,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
             float categoryValue = Utility.getCategoryValue(mContext, mCursor.getInt(mCursor.getColumnIndex(MainCategoriesTable.FIELD__ID)));
 
             holder.mValueContainer.setVisibility(View.VISIBLE);
-            holder.mValueView.setText(NumberFormat.getInstance(Locale.getDefault()).format(categoryValue));
-            holder.mCurrencyView.setText(PreferenceManager.getDefaultSharedPreferences(mContext).getString(mContext.getString(R.string.prefs_current_currency_key), mContext.getString(R.string.default_currency)));
+            holder.mValueView.setText(Utility.getValueFormatWithCurrency(mContext).format(categoryValue));
         } else {
             holder.mValueContainer.setVisibility(View.GONE);
         }
@@ -85,7 +80,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         public TextView mNameView;
         public TextView mValueView;
         public LinearLayout mValueContainer;
-        public TextView mCurrencyView;
 
         public CategoriesAdapterViewHolder(View itemView) {
             super(itemView);
@@ -94,7 +88,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
             mIconView = (ImageView) itemView.findViewById(R.id.iv_icon);
             mNameView = (TextView) itemView.findViewById(R.id.tv_name);
             mValueView = (TextView) itemView.findViewById(R.id.tv_value);
-            mCurrencyView = (TextView) itemView.findViewById(R.id.tv_currency);
             itemView.setOnClickListener(this);
         }
 

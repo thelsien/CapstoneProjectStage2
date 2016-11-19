@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
 
+import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Vector;
 
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
@@ -37,6 +39,17 @@ public class Utility {
             R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp,
             R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp
     };
+
+    public static NumberFormat getValueFormatWithCurrency(Context context) {
+        NumberFormat format = NumberFormat.getCurrencyInstance();
+        format.setCurrency(Currency.getInstance(
+                PreferenceManager.getDefaultSharedPreferences(context).getString(
+                        context.getString(R.string.prefs_current_currency_key),
+                        context.getString(R.string.default_currency))
+                )
+        );
+        return format;
+    }
 
     public static void setupFirstRunDatas(Context context) {
 

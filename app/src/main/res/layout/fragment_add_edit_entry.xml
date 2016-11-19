@@ -56,7 +56,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:paddingTop="@dimen/add_edit_currency_padding_top"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/text_size_16sp"

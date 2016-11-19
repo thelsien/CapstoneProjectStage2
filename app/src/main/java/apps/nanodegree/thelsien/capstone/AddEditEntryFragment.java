@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Currency;
 
 import apps.nanodegree.thelsien.capstone.data.IncomesTable;
 import apps.nanodegree.thelsien.capstone.data.IncomesTableConfig;
@@ -94,10 +95,10 @@ public class AddEditEntryFragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mCurrencyTextView.setText(
+        mCurrencyTextView.setText(Currency.getInstance(
                 PreferenceManager.getDefaultSharedPreferences(getContext())
                         .getString(getString(R.string.prefs_current_currency_key),
-                                getString(R.string.default_currency))
+                                getString(R.string.default_currency))).getSymbol()
         );
 
         if (!mIsIncome) {
