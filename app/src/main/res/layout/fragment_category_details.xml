@@ -31,7 +31,7 @@
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/content_description_category_icon"
                     android:tint="@android:color/white"
-                    tools:src="@drawable/ic_kitchen_black_48dp"/>
+                    tools:src="@drawable/banknotes"/>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"

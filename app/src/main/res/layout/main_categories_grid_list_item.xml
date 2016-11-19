@@ -14,7 +14,8 @@
         android:layout_marginBottom="@dimen/padding_4dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/content_description_category_icon"
-        tools:src="@drawable/ic_kitchen_black_48dp"/>
+        android:tint="@android:color/black"
+        tools:src="@drawable/banknotes"/>
 
     <TextView
         android:id="@+id/tv_name"
