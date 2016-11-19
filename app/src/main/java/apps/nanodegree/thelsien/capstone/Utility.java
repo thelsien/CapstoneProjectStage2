@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 
 import java.text.NumberFormat;
@@ -39,6 +41,19 @@ public class Utility {
             R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp,
             R.drawable.ic_kitchen_black_48dp, R.drawable.ic_kitchen_black_48dp
     };
+
+    public static boolean isNetworkAvailable(Context context) {
+        boolean isNetworkAvailable = false;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnected()) {
+            isNetworkAvailable = true;
+        }
+
+        return isNetworkAvailable;
+    }
 
     public static NumberFormat getValueFormatWithCurrency(Context context) {
         NumberFormat format = NumberFormat.getCurrencyInstance();

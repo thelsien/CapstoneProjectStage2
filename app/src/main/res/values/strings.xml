@@ -72,6 +72,9 @@
     <string name="export_data_failed">Failed to export data.</string>
     <string name="import_data_success">Importing data finished.</string>
     <string name="import_data_failed">Failed to import data.</string>
+    <string name="no_network_dialog_title">No network</string>
+    <string name="no_network_dialog_message">For changing currency, we get informations from a remote server. Because currently no network is available, we cannot change the currency. Please check you wifi or mobile internet settings!</string>
+    <string name="no_network_dialog_positive">Open settings</string>
 
     <string-array name="currencies">
         <item>EUR</item>

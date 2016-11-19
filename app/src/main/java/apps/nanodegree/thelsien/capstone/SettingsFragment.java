@@ -13,6 +13,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -90,11 +91,48 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.prefs_current_currency_key))) {
-            new CurrencyChangeAsyncTask(getActivity(), this).execute(
-                    sharedPreferences.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency)),
-                    sharedPreferences.getString(getString(R.string.prefs_current_currency_key), getString(R.string.default_currency))
-            );
-            mProgressDialog.show();
+            if (Utility.isNetworkAvailable(getActivity())) {
+                mProgressDialog.show();
+                new CurrencyChangeAsyncTask(getActivity(), this).execute(
+                        sharedPreferences.getString(getString(R.string.prefs_source_currency_key), getString(R.string.default_currency)),
+                        sharedPreferences.getString(getString(R.string.prefs_current_currency_key), getString(R.string.default_currency))
+                );
+            } else {
+                String sourceCurrency = sharedPreferences.getString(
+                        getString(R.string.prefs_source_currency_key),
+                        getString(R.string.default_currency)
+                );
+                String currentCurrency = sharedPreferences.getString(
+                        getString(R.string.prefs_current_currency_key),
+                        getString(R.string.default_currency)
+                );
+
+                sharedPreferences.edit()
+                        .putString(
+                                getString(R.string.prefs_current_currency_key),
+                                sourceCurrency
+                        )
+                        .apply();
+                if (!sourceCurrency.equals(currentCurrency)) {
+                    ListPreference preference = (ListPreference) findPreference(getString(R.string.prefs_current_currency_key));
+                    preference.setValue(sourceCurrency);
+
+                    Utility.notifyThroughContentResolver(getActivity());
+                    setPreferenceSummary(preference, sourceCurrency);
+
+                    AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.no_network_dialog_title)
+                            .setMessage(R.string.no_network_dialog_message)
+                            .setPositiveButton(R.string.no_network_dialog_positive, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                }
+                            })
+                            .create();
+                    dialog.show();
+                }
+            }
         } else if (key.equals(getString(R.string.prefs_time_interval))) {
             String newValue = sharedPreferences.getString(getString(R.string.prefs_time_interval), getString(R.string.default_time_interval_month));
             if (newValue.equals(getString(R.string.time_interval_custom))) {
