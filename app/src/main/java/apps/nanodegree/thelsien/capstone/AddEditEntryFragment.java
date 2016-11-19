@@ -23,6 +23,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.Calendar;
 import java.util.Currency;
 
@@ -55,6 +59,8 @@ public class AddEditEntryFragment extends Fragment {
     private TextView mTitleTextView;
     private TextView mCurrencyTextView;
 
+    private InterstitialAd mInterstitialAd;
+
     public static AddEditEntryFragment getInstance(Uri uri, int categoryId, boolean isIncome) {
         AddEditEntryFragment f = new AddEditEntryFragment();
 
@@ -78,6 +84,19 @@ public class AddEditEntryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_edit_entry, container, false);
+
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+                getActivity().finish();
+            }
+        });
+
+        requestNewInterstitial();
 
         Bundle args = getArguments();
         mUri = args.getParcelable(ARGUMENT_ENTRY_URI);
@@ -126,6 +145,16 @@ public class AddEditEntryFragment extends Fragment {
         return rootView;
     }
 
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("DF4CD421E5ECF2C5B912A0051F1B7BC6")
+                .addTestDevice("611bd81b4df23a35")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
+    }
+
     private void setupAddNewIncomeEntry() {
         mTitleTextView.setText(R.string.add_income_title);
         mChooseCategoryButton.setText(R.string.add_edit_button_add_income);
@@ -147,7 +176,11 @@ public class AddEditEntryFragment extends Fragment {
                         Utility.notifyThroughContentResolver(getContext());
                         Utility.updateWidgets(getContext());
 
-                        getActivity().finish();
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            getActivity().finish();
+                        }
                     } else {
                         Log.d(TAG, "Error, uri is null after insert");
                     }
@@ -220,7 +253,11 @@ public class AddEditEntryFragment extends Fragment {
                         Utility.notifyThroughContentResolver(getContext());
                         Utility.updateWidgets(getContext());
 
-                        getActivity().finish();
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            getActivity().finish();
+                        }
                     } else {
                         Log.d(TAG, "Error, uri is null after insert");
                     }
@@ -362,7 +399,11 @@ public class AddEditEntryFragment extends Fragment {
         Utility.notifyThroughContentResolver(getContext());
         Utility.updateWidgets(getContext());
 
-        getActivity().finish();
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            getActivity().finish();
+        }
     }
 
     private void deleteEntryFromDB(Uri contentUri, String columnId) {
@@ -381,7 +422,11 @@ public class AddEditEntryFragment extends Fragment {
         Utility.notifyThroughContentResolver(getContext());
         Utility.updateWidgets(getContext());
 
-        getActivity().finish();
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            getActivity().finish();
+        }
     }
 
     public boolean isValueValid() {

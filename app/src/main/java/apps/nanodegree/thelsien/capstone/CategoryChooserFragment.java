@@ -18,6 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.Calendar;
 
 import apps.nanodegree.thelsien.capstone.adapters.CategoriesAdapter;
@@ -40,6 +44,8 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
 
     private CategoriesAdapter mAdapter;
 
+    private InterstitialAd mInterstitialAd;
+
     public static CategoryChooserFragment getInstance(int categoryId, int entryId, float value, String note) {
         CategoryChooserFragment f = new CategoryChooserFragment();
 
@@ -59,6 +65,19 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_category_chooser, container, false);
 
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+                getActivity().finish();
+            }
+        });
+
+        requestNewInterstitial();
+
         mAdapter = new CategoriesAdapter(getContext(), null, this, false);
         RecyclerView listView = (RecyclerView) rootView.findViewById(R.id.lv_list);
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
@@ -70,6 +89,16 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
         listView.setAdapter(mAdapter);
 
         return rootView;
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("DF4CD421E5ECF2C5B912A0051F1B7BC6")
+                .addTestDevice("611bd81b4df23a35")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override
@@ -103,7 +132,11 @@ public class CategoryChooserFragment extends Fragment implements LoaderManager.L
         Utility.notifyThroughContentResolver(getContext());
         Utility.updateWidgets(getContext());
 
-        getActivity().finish();
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            getActivity().finish();
+        }
     }
 
     @Override

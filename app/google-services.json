@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "568393330040",
+    "firebase_url": "https://moneytrackr-ea9d1.firebaseio.com",
+    "project_id": "moneytrackr-ea9d1",
+    "storage_bucket": "moneytrackr-ea9d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568393330040:android:a25e634a7dc1a400",
+        "android_client_info": {
+          "package_name": "apps.nanodegree.thelsien.capstone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "568393330040-u27merpv77eubs5ihnk4mm1gboo979o9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6Cou9xDZNBuDbZdxb5MN24RyrpjJG7_E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
