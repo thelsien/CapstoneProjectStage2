@@ -132,23 +132,25 @@ public class AddEditEntryFragment extends Fragment {
         mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                IncomesTableConfig config = new IncomesTableConfig();
+                if (isValueValid()) {
+                    Calendar cal = Calendar.getInstance();
+                    IncomesTableConfig config = new IncomesTableConfig();
 
-                config.value = Float.valueOf(mValueEditText.getText().toString().trim());
-                config.note = mNoteEditText.getText().toString().trim();
-                config.date = cal.getTimeInMillis() / 1000;
+                    config.value = Float.valueOf(mValueEditText.getText().toString().trim());
+                    config.note = mNoteEditText.getText().toString().trim();
+                    config.date = cal.getTimeInMillis() / 1000;
 
-                Uri uri = getContext().getContentResolver().insert(IncomesTable.CONTENT_URI, IncomesTable.getContentValues(config, false));
-                if (uri != null) {
-                    Log.d(TAG, "Success");
+                    Uri uri = getContext().getContentResolver().insert(IncomesTable.CONTENT_URI, IncomesTable.getContentValues(config, false));
+                    if (uri != null) {
+                        Log.d(TAG, "Success");
 
-                    Utility.notifyThroughContentResolver(getContext());
-                    Utility.updateWidgets(getContext());
+                        Utility.notifyThroughContentResolver(getContext());
+                        Utility.updateWidgets(getContext());
 
-                    getActivity().finish();
-                } else {
-                    Log.d(TAG, "Error, uri is null after insert");
+                        getActivity().finish();
+                    } else {
+                        Log.d(TAG, "Error, uri is null after insert");
+                    }
                 }
             }
         });
@@ -180,11 +182,13 @@ public class AddEditEntryFragment extends Fragment {
         mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-                        .addToBackStack("other_fragment")
-                        .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(-1, mEntryId, Float.valueOf(mValueEditText.getText().toString().trim()), mNoteEditText.getText().toString().trim()))
-                        .commit();
+                if (isValueValid()) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                            .addToBackStack("other_fragment")
+                            .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(-1, mEntryId, Float.valueOf(mValueEditText.getText().toString().trim()), mNoteEditText.getText().toString().trim()))
+                            .commit();
+                }
             }
         });
     }
@@ -200,24 +204,26 @@ public class AddEditEntryFragment extends Fragment {
         mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                SpendingsTableConfig config = new SpendingsTableConfig();
+                if (isValueValid()) {
+                    Calendar cal = Calendar.getInstance();
+                    SpendingsTableConfig config = new SpendingsTableConfig();
 
-                config.categoryId = mCategoryId;
-                config.value = Float.valueOf(mValueEditText.getText().toString().trim());
-                config.note = mNoteEditText.getText().toString().trim();
-                config.date = cal.getTimeInMillis() / 1000;
+                    config.categoryId = mCategoryId;
+                    config.value = Float.valueOf(mValueEditText.getText().toString().trim());
+                    config.note = mNoteEditText.getText().toString().trim();
+                    config.date = cal.getTimeInMillis() / 1000;
 
-                Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false));
-                if (uri != null) {
-                    Log.d(TAG, "Success");
+                    Uri uri = getContext().getContentResolver().insert(SpendingsTable.CONTENT_URI, SpendingsTable.getContentValues(config, false));
+                    if (uri != null) {
+                        Log.d(TAG, "Success");
 
-                    Utility.notifyThroughContentResolver(getContext());
-                    Utility.updateWidgets(getContext());
+                        Utility.notifyThroughContentResolver(getContext());
+                        Utility.updateWidgets(getContext());
 
-                    getActivity().finish();
-                } else {
-                    Log.d(TAG, "Error, uri is null after insert");
+                        getActivity().finish();
+                    } else {
+                        Log.d(TAG, "Error, uri is null after insert");
+                    }
                 }
             }
         });
@@ -246,16 +252,18 @@ public class AddEditEntryFragment extends Fragment {
             mChooseCategoryButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-                            .addToBackStack("other_fragment")
-                            .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(
-                                    mCategoryId,
-                                    mEntryId,
-                                    Float.valueOf(mValueEditText.getText().toString().trim()),
-                                    mNoteEditText.getText().toString().trim())
-                            )
-                            .commit();
+                    if (isValueValid()) {
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                                .addToBackStack("other_fragment")
+                                .replace(R.id.category_add_edit_container, CategoryChooserFragment.getInstance(
+                                        mCategoryId,
+                                        mEntryId,
+                                        Float.valueOf(mValueEditText.getText().toString().trim()),
+                                        mNoteEditText.getText().toString().trim())
+                                )
+                                .commit();
+                    }
                 }
             });
 
@@ -287,10 +295,12 @@ public class AddEditEntryFragment extends Fragment {
                 );
                 break;
             case 2:
-                saveEntryToDB(
-                        mIsIncome ? IncomesTable.CONTENT_URI : SpendingsTable.CONTENT_URI,
-                        mIsIncome ? IncomesTable.FIELD_ID : SpendingsTable.FIELD_ID
-                );
+                if (isValueValid()) {
+                    saveEntryToDB(
+                            mIsIncome ? IncomesTable.CONTENT_URI : SpendingsTable.CONTENT_URI,
+                            mIsIncome ? IncomesTable.FIELD_ID : SpendingsTable.FIELD_ID
+                    );
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -372,5 +382,29 @@ public class AddEditEntryFragment extends Fragment {
         Utility.updateWidgets(getContext());
 
         getActivity().finish();
+    }
+
+    public boolean isValueValid() {
+        boolean isValueValid = true;
+        String valueText = mValueEditText.getText().toString();
+        if (valueText.equals("")) {
+            mValueTextInputLayout.setErrorEnabled(true);
+            mValueTextInputLayout.setError(getString(R.string.add_edit_number_field_required));
+            isValueValid = false;
+        } else {
+
+            try {
+                Float.parseFloat(valueText);
+                mValueTextInputLayout.setErrorEnabled(false);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                isValueValid = false;
+
+                mValueTextInputLayout.setErrorEnabled(true);
+                mValueTextInputLayout.setError(getString(R.string.add_edit_not_a_number_error));
+            }
+        }
+
+        return isValueValid;
     }
 }

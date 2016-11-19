@@ -39,6 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/add_edit_spendings_edit_text_hint"
+                    android:inputType="numberDecimal"
                     tools:text="555.55"/>
             </android.support.design.widget.TextInputLayout>
 

@@ -75,6 +75,8 @@
     <string name="no_network_dialog_title">No network</string>
     <string name="no_network_dialog_message">For changing currency, we get informations from a remote server. Because currently no network is available, we cannot change the currency. Please check you wifi or mobile internet settings!</string>
     <string name="no_network_dialog_positive">Open settings</string>
+    <string name="add_edit_not_a_number_error">The value must be a number!</string>
+    <string name="add_edit_number_field_required">This field is required!</string>
 
     <string-array name="currencies">
         <item>EUR</item>
